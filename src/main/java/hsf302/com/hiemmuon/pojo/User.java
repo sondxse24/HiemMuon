@@ -1,0 +1,68 @@
+package hsf302.com.hiemmuon.pojo;
+
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.time.LocalDate;
+
+@Entity
+@Getter
+@Setter
+@Table(name = "users")
+public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
+    private int userId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "role_id", nullable = false)
+    private Role roleId;
+
+    @Column(name = "name", length = 100, nullable = false)
+    private String name;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "gender", nullable = false)
+    private Gender gender;
+
+    @Column(name = "dob")
+    private LocalDate dob;
+
+    @Column(name = "email", length = 100, nullable = false, unique = true)
+    private String email;
+
+    @Column(name = "phone", length = 20)
+    private String phone;
+
+    @Column(name = "password_hash", length = 255, nullable = false)
+    private String passwordHash;
+
+    @Column(name = "create_at")
+    private LocalDate createAt;
+
+    @Column(name = "update_at")
+    private LocalDate updateAt;
+
+    public enum Gender {
+        male, female
+    }
+
+    public User() {
+    }
+
+    public User(int userId, Role role, String name, Gender gender, LocalDate dob, String email, String phone, String passwordHash, LocalDate createAt, LocalDate updateAt) {
+        this.userId = userId;
+        this.roleId = role;
+        this.name = name;
+        this.gender = gender;
+        this.dob = dob;
+        this.email = email;
+        this.phone = phone;
+        this.passwordHash = passwordHash;
+        this.createAt = createAt;
+        this.updateAt = updateAt;
+    }
+}
