@@ -3,6 +3,7 @@ package hsf302.com.hiemmuon.pojo;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Nationalized;
 
 import java.time.LocalDate;
 
@@ -21,6 +22,7 @@ public class User {
     @JoinColumn(name = "role_id", nullable = false)
     private Role roleId;
 
+    @Nationalized
     @Column(name = "name", length = 100, nullable = false)
     private String name;
 

@@ -3,6 +3,7 @@ package hsf302.com.hiemmuon.pojo;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Nationalized;
 
 import java.math.BigDecimal;
 
@@ -17,6 +18,7 @@ public class TreatmentService {
     @Column(name = "service_id")
     private int serviceId;
 
+    @Nationalized
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 

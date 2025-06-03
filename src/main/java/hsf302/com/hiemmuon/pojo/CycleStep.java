@@ -3,6 +3,7 @@ package hsf302.com.hiemmuon.pojo;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Nationalized;
 
 import java.time.LocalDate;
 
@@ -29,6 +30,7 @@ public class CycleStep {
     @Column(name = "status", nullable = false, length = 20)
     private Status status;
 
+    @Nationalized
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 

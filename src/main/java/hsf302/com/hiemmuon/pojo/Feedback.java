@@ -3,6 +3,7 @@ package hsf302.com.hiemmuon.pojo;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Nationalized;
 
 import java.time.LocalDateTime;
 
@@ -28,6 +29,7 @@ public class Feedback {
     @Column(name = "rating", nullable = false)
     private int rating;
 
+    @Nationalized
     @Column(name = "comment", columnDefinition = "TEXT")
     private String comment;
 

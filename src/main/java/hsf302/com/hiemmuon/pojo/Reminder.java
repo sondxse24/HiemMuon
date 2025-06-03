@@ -3,6 +3,7 @@ package hsf302.com.hiemmuon.pojo;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Nationalized;
 
 import java.time.LocalDateTime;
 
@@ -28,9 +29,11 @@ public class Reminder {
     @Column(name = "related_id", nullable = false)
     private int relatedId;
 
+    @Nationalized
     @Column(name = "title", length = 255, nullable = false)
     private String title;
 
+    @Nationalized
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 

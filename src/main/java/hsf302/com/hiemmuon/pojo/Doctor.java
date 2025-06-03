@@ -3,6 +3,7 @@ package hsf302.com.hiemmuon.pojo;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Nationalized;
 
 @Entity
 @Getter
@@ -19,6 +20,7 @@ public class Doctor {
     @JoinColumn(name = "doctor_id")
     private User user;
 
+    @Nationalized
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 

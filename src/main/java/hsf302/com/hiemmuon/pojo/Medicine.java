@@ -3,6 +3,7 @@ package hsf302.com.hiemmuon.pojo;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Nationalized;
 
 @Entity
 @Getter
@@ -18,6 +19,7 @@ public class Medicine {
     @Column(name = "name", length = 50, nullable = false)
     private String name;
 
+    @Nationalized
     @Column(name = "discription", columnDefinition = "TEXT")
     private String discription;
 
