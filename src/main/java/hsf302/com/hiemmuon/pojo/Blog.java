@@ -14,7 +14,7 @@ import java.time.LocalDate;
 public class Blog {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "blog_id")
     private int blogId;
 

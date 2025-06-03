@@ -14,13 +14,13 @@ import java.time.LocalDate;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private int userId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id", nullable = false)
-    private Role roleId;
+    private Role role;
 
     @Nationalized
     @Column(name = "name", length = 100, nullable = false)
@@ -57,7 +57,7 @@ public class User {
 
     public User(int userId, Role role, String name, Gender gender, LocalDate dob, String email, String phone, String passwordHash, LocalDate createAt, LocalDate updateAt) {
         this.userId = userId;
-        this.roleId = role;
+        this.role = role;
         this.name = name;
         this.gender = gender;
         this.dob = dob;

@@ -13,7 +13,7 @@ import java.time.LocalDate;
 public class TestResult {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "result_id")
     private int resultId;
 

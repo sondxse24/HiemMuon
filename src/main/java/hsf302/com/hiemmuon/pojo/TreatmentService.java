@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 public class TreatmentService {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "service_id")
     private int serviceId;
 

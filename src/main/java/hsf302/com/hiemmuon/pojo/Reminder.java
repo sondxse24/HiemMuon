@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class Reminder {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "remind_id")
     private int remindId;
 

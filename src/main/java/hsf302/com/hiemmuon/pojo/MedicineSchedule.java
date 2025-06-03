@@ -13,7 +13,7 @@ import java.time.LocalDate;
 public class MedicineSchedule {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "medication_id")
     private int medicationId;
 

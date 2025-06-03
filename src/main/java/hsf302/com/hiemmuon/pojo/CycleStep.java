@@ -14,7 +14,7 @@ import java.time.LocalDate;
 public class CycleStep {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "step_id")
     private int stepId;
 

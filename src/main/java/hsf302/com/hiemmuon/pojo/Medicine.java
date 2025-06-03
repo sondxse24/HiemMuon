@@ -12,7 +12,7 @@ import org.hibernate.annotations.Nationalized;
 public class Medicine {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "medicin_id")
     private int medicinId;
 
