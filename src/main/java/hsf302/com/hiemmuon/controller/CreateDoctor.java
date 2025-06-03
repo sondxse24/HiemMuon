@@ -1,6 +1,7 @@
 package hsf302.com.hiemmuon.controller;
 
 import hsf302.com.hiemmuon.pojo.Doctor;
+import hsf302.com.hiemmuon.pojo.Role;
 import hsf302.com.hiemmuon.pojo.User;
 import hsf302.com.hiemmuon.repository.DoctorRepository;
 import hsf302.com.hiemmuon.repository.RoleRepository;
@@ -15,19 +16,19 @@ import java.time.LocalDate;
 @Controller
 public class CreateDoctor {
     @Autowired
-    private UserRepository userRepo;
+    private UserRepository userRepository;
 
     @Autowired
-    private DoctorRepository doctorRepo;
+    private DoctorRepository doctorRepository;
 
     @Autowired
-    private RoleRepository roleRepo;
+    private RoleRepository roleRepository;
 
     @GetMapping("/createDoctor")
     public String showCreateForm(Model model) {
         model.addAttribute("user", new User());
         model.addAttribute("doctor", new Doctor());
-        model.addAttribute("roles", roleRepo.findAll());
+        model.addAttribute("roles", roleRepository.findAll());
         return "createDoctor";
     }
 
@@ -35,26 +36,28 @@ public class CreateDoctor {
     public String createDoctor(@ModelAttribute("user") User user,
                                @RequestParam("description") String description,
                                @RequestParam("experience") int experience,
-                               @RequestParam(value = "isActive", required = false) Boolean isActive,
                                Model model) {
-        if (userRepo.existsByEmail(user.getEmail())) {
+        if (userRepository.existsByEmail(user.getEmail())) {
             model.addAttribute("error", "Email đã tồn tại!");
-            model.addAttribute("roles", roleRepo.findAll());
+            model.addAttribute("roles", roleRepository.findAll());
             return "createDoctor";
         }
 
         user.setCreateAt(LocalDate.now());
         user.setUpdateAt(LocalDate.now());
-        // TODO: Hash password thực tế
-        User savedUser = userRepo.save(user);
+
+        Role role = roleRepository.findByRoleName("doctor");
+        user.setRole(role);
+
+        User savedUser = userRepository.save(user);
 
         Doctor doctor = new Doctor();
         doctor.setUser(savedUser);
         doctor.setDescription(description);
         doctor.setExperience(experience);
-        doctor.setIsActive(isActive != null ? isActive : false);
+        doctor.setIsActive(true);
 
-        doctorRepo.save(doctor);
+        doctorRepository.save(doctor);
 
         return "loginForDoctor";
     }

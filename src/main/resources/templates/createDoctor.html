@@ -31,11 +31,6 @@
     <label>Mật khẩu:</label>
     <input type="password" th:field="*{passwordHash}" required/><br/>
 
-    <label>Vai trò:</label>
-    <select th:field="*{role.roleId}">
-        <option th:each="r : ${roles}" th:value="${r.roleId}" th:text="${r.roleName}"></option>
-    </select><br/>
-
     <hr/>
 
     <label>Mô tả bác sĩ:</label>
@@ -43,10 +38,7 @@
 
     <label for="experience">Kinh nghiệm (năm)</label>
     <input type="number" class="form-control" id="experience" name="experience" required>
-
-    <label>Hoạt động:</label>
-    <input type="checkbox"/><br/>
-
+    <br/>
     <button type="submit">Tạo mới</button>
 </form>
 </body>
