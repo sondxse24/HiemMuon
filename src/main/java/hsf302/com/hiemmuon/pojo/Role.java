@@ -13,7 +13,7 @@ import java.util.List;
 public class Role {
 
     @Id
-    @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
+    @GeneratedValue(strategy = jakarta.persistence.GenerationType.AUTO)
     @Column(name = "role_id")
     private int roleId;
 

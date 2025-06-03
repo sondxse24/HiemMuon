@@ -1,8 +1,9 @@
 package hsf302.com.hiemmuon.repository;
 
+import hsf302.com.hiemmuon.pojo.DoctorSchedule;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface DoctorScheduleRepository extends JpaRepository<DoctorScheduleRepository, Long> {
+public interface DoctorScheduleRepository extends JpaRepository<DoctorSchedule, Long> {
 }

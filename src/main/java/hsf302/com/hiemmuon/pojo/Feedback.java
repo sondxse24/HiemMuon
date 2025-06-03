@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 public class Feedback {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "feedback_id")
     private int feedbackId;
 
