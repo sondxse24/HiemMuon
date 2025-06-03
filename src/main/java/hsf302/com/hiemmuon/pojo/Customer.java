@@ -14,7 +14,7 @@ public class Customer {
     @Column(name = "customer_id")
     private int customerId;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @MapsId
     @JoinColumn(name = "customer_id")
     private User user;

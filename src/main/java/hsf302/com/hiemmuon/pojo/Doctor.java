@@ -15,7 +15,7 @@ public class Doctor {
     @Column(name = "doctor_id")
     private int doctorId;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @MapsId
     @JoinColumn(name = "doctor_id")
     private User user;

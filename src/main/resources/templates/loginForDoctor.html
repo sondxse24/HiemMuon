@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login for Doctor</title>
+</head>
+<body>
+<h1>Doctor Login</h1>
+<form th:action="@{/loginForDoctor}" th:object="${loginDoctorForm}" method="post">
+    <label for="email">Email</label>
+    <input type="text" id="email" name="email"><br>
+    <label for="password">Password</label>
+    <input type="password" id="password" name="password"><br/>
+    <button type="submit">Login</button>
+    <p th:if="${invalid}" class="error">Invalid Email or Password</p>
+</form>
+</body>
+</html>
