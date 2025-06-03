@@ -10,6 +10,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @Controller
 public class LoginDoctor {
 
@@ -36,7 +38,7 @@ public class LoginDoctor {
 
         User user = userService.getUserByEmail(email);
 
-        Doctor doctor = doctorService.getDoctorByUserId(user.getUserId());
+        Optional<Doctor> doctor = doctorService.getDoctorByUserId(user.getUserId());
         if (doctor == null) {
             model.addAttribute("error", "Tài khoản này không phải bác sĩ!");
             return "loginForDoctor";
@@ -45,6 +47,6 @@ public class LoginDoctor {
         model.addAttribute("doctor", doctor);
         model.addAttribute("email", user.getEmail());
 
-        return "menuDoctor";
+        return "redirect:/doctors";
     }
 }

@@ -5,23 +5,24 @@
     <title>Menu Doctor</title>
 </head>
 <body>
-<h2>Quản lý Doctor</h2>
+<h2>Doctor Management</h2>
 
 <table border="1" cellpadding="10" cellspacing="0">
     <thead>
     <tr>
-        <th>Họ tên</th>
+        <th>ID</th>
+        <th>Name</th>
         <th>Email</th>
-        <th>Số điện thoại</th>
+        <th>Phone</th>
         <th>Password</th>
-        <th>Giới tính</th>
-        <th>Kinh nghiệm (năm)</th>
-        <th>Mô tả</th>
-        <th>Trạng thái</th>
+        <th>Gender</th>
+        <th>Experience</th>
+        <th>Discription</th>
     </tr>
     </thead>
     <tbody>
     <tr th:each="doctor : ${doctors}">
+        <td th:text="${doctor.doctorId}">ID</td>
         <td th:text="${doctor.user.name}">Tên bác sĩ</td>
         <td th:text="${doctor.user.email}">Email</td>
         <td th:text="${doctor.user.phone}">Số điện thoại</td>
@@ -29,7 +30,12 @@
         <td th:text="${doctor.user.gender}">Giới tính</td>
         <td th:text="${doctor.experience}">Kinh nghiệm</td>
         <td th:text="${doctor.description}">Mô tả</td>
-        <td th:text="${doctor.isActive} ? 'Hoạt động' : 'Không hoạt động'">Trạng thái</td>
+        <td>
+            <a th:href="@{/doctors/edit/{id}(id=${doctor.doctorId})}">Update</a>
+        </td>
+        <td>
+            <a th:href="@{'/doctors/delete/' + ${doctor.doctorId}}">Delete</a>
+        </td>
     </tr>
     </tbody>
 </table>

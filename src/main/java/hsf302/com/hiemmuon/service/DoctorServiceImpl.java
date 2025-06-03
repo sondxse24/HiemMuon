@@ -6,7 +6,6 @@ import hsf302.com.hiemmuon.pojo.User;
 import hsf302.com.hiemmuon.repository.DoctorRepository;
 import hsf302.com.hiemmuon.repository.RoleRepository;
 import hsf302.com.hiemmuon.repository.UserRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,9 +22,13 @@ public class DoctorServiceImpl implements DoctorService {
     @Autowired
     private DoctorRepository doctorRepository;
 
-    public Doctor getDoctorByUserId(int userId) {
-        return doctorRepository.findById(userId)
-                .orElse(null);
+    public Optional<Doctor> getDoctorByUserId(int userId) {
+        return doctorRepository.findByUserUserId(userId);
+    }
+
+    @Override
+    public Doctor saveDoctor(Doctor doctor) throws Exception {
+        return doctorRepository.save(doctor);
     }
 
     @Override

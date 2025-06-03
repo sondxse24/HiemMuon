@@ -17,7 +17,7 @@ public class ReadDoctor {
 
     @GetMapping("/doctors")
     public String listDoctors(Model model) {
-        List<Doctor> doctors = doctorRepository.findAll();
+        List<Doctor> doctors = doctorRepository.findByIsActiveTrue();
         model.addAttribute("doctors", doctors);
         return "menuDoctor";
     }
