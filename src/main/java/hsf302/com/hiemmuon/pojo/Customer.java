@@ -19,7 +19,7 @@ public class Customer {
     @JoinColumn(name = "customer_id")
     private User user;
 
-    @Column(name = "medical_history", columnDefinition = "TEXT")
+    @Column(name = "medical_history", columnDefinition = "NVARCHAR(MAX)")
     private String medicalHistory;
 
     @Column(name = "is_active")

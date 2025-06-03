@@ -30,7 +30,7 @@ public class Feedback {
     private int rating;
 
     @Nationalized
-    @Column(name = "comment", columnDefinition = "TEXT")
+    @Column(name = "comment", columnDefinition = "NVARCHAR(MAX)")
     private String comment;
 
     @Column(name = "create_at", nullable = false)

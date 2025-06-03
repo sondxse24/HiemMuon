@@ -19,7 +19,7 @@ public class TreatmentService {
     private int serviceId;
 
     @Nationalized
-    @Column(name = "description", columnDefinition = "TEXT")
+    @Column(name = "description", columnDefinition = "NVARCHAR(MAX)")
     private String description;
 
     @Column(name = "success_rate")

@@ -34,7 +34,7 @@ public class Reminder {
     private String title;
 
     @Nationalized
-    @Column(name = "description", columnDefinition = "TEXT")
+    @Column(name = "description", columnDefinition = "NVARCHAR(MAX)")
     private String description;
 
     @Column(name = "remind_at", nullable = false)

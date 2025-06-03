@@ -21,7 +21,7 @@ public class Doctor {
     private User user;
 
     @Nationalized
-    @Column(name = "description", columnDefinition = "TEXT")
+    @Column(name = "description", columnDefinition = "NVARCHAR(MAX)")
     private String description;
 
     @Column(name = "experience")

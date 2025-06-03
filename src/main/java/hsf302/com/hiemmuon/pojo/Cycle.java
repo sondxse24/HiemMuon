@@ -32,7 +32,7 @@ public class Cycle {
     @Column(name = "status", nullable = false, length = 20)
     private Status status;
 
-    @Column(name = "note", columnDefinition = "TEXT")
+    @Column(name = "note", columnDefinition = "NVARCHAR(MAX)")
     private String note;
 
     public enum Status {

@@ -20,7 +20,7 @@ public class Medicine {
     private String name;
 
     @Nationalized
-    @Column(name = "discription", columnDefinition = "TEXT")
+    @Column(name = "discription", columnDefinition = "NVARCHAR(MAX)")
     private String discription;
 
     @Column(name = "number")

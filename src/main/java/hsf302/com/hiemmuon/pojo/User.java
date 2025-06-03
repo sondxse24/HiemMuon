@@ -39,8 +39,8 @@ public class User {
     @Column(name = "phone", length = 20)
     private String phone;
 
-    @Column(name = "password_hash", length = 255, nullable = false)
-    private String passwordHash;
+    @Column(name = "password", length = 255, nullable = false)
+    private String password;
 
     @Column(name = "create_at")
     private LocalDate createAt;
@@ -55,7 +55,7 @@ public class User {
     public User() {
     }
 
-    public User(int userId, Role role, String name, Gender gender, LocalDate dob, String email, String phone, String passwordHash, LocalDate createAt, LocalDate updateAt) {
+    public User(int userId, Role role, String name, Gender gender, LocalDate dob, String email, String phone, String password, LocalDate createAt, LocalDate updateAt) {
         this.userId = userId;
         this.role = role;
         this.name = name;
@@ -63,7 +63,7 @@ public class User {
         this.dob = dob;
         this.email = email;
         this.phone = phone;
-        this.passwordHash = passwordHash;
+        this.password = password;
         this.createAt = createAt;
         this.updateAt = updateAt;
     }

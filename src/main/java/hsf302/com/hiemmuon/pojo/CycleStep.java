@@ -31,7 +31,7 @@ public class CycleStep {
     private Status status;
 
     @Nationalized
-    @Column(name = "description", columnDefinition = "TEXT")
+    @Column(name = "description", columnDefinition = "NVARCHAR(MAX)")
     private String description;
 
     @Column(name = "eventdate", nullable = false)
