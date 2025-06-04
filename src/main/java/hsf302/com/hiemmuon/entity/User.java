@@ -1,5 +1,6 @@
-package hsf302.com.hiemmuon.pojo;
+package hsf302.com.hiemmuon.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,6 +12,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Table(name = "users")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class User {
 
     @Id
@@ -23,11 +25,11 @@ public class User {
     private Role role;
 
     @Nationalized
-    @Column(name = "name", length = 100, nullable = false)
+    @Column(name = "name", length = 100)
     private String name;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "gender", nullable = false)
+    @Column(name = "gender")
     private Gender gender;
 
     @Column(name = "dob")

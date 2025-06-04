@@ -1,5 +1,6 @@
-package hsf302.com.hiemmuon.pojo;
+package hsf302.com.hiemmuon.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,6 +10,7 @@ import org.hibernate.annotations.Nationalized;
 @Getter
 @Setter
 @Table(name = "doctors")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Doctor {
 
     @Id

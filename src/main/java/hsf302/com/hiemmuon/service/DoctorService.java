@@ -1,7 +1,7 @@
 package hsf302.com.hiemmuon.service;
 
-import hsf302.com.hiemmuon.pojo.Doctor;
-import hsf302.com.hiemmuon.pojo.User;
+import hsf302.com.hiemmuon.entity.Doctor;
+import hsf302.com.hiemmuon.entity.User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,5 +18,7 @@ public interface DoctorService {
     Doctor saveDoctor(Doctor doctor) throws Exception;
 
     List<Doctor> findAll();
+
+    Doctor updateDoctor(int id, Doctor doctor);
 }
 

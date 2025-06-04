@@ -1,8 +1,8 @@
 package hsf302.com.hiemmuon.service;
 
-import hsf302.com.hiemmuon.pojo.Doctor;
-import hsf302.com.hiemmuon.pojo.Role;
-import hsf302.com.hiemmuon.pojo.User;
+import hsf302.com.hiemmuon.entity.Doctor;
+import hsf302.com.hiemmuon.entity.Role;
+import hsf302.com.hiemmuon.entity.User;
 import hsf302.com.hiemmuon.repository.DoctorRepository;
 import hsf302.com.hiemmuon.repository.RoleRepository;
 import hsf302.com.hiemmuon.repository.UserRepository;
@@ -28,13 +28,42 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public Doctor saveDoctor(Doctor doctor) throws Exception {
+    public Doctor saveDoctor(Doctor doctor) {
         return doctorRepository.save(doctor);
     }
 
     @Override
     public List<Doctor> findAll() {
         return doctorRepository.findAll();
+    }
+
+    @Override
+    public Doctor updateDoctor(int id, Doctor updateDoctor) {
+        Doctor existingDoctor = getDoctorByUserId(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid doctor Id: " + id));
+
+        User existingUser = existingDoctor.getUser();
+        User incomingUser = updateDoctor.getUser();
+
+        if (incomingUser != null) {
+            if (incomingUser.getName() != null) {
+                existingUser.setName(incomingUser.getName());
+            }
+            if (incomingUser.getPhone() != null) {
+                existingUser.setPhone(incomingUser.getPhone());
+            }
+            if (incomingUser.getPassword() != null) {
+                existingUser.setPassword(incomingUser.getPassword());
+            }
+        }
+
+        if (updateDoctor.getExperience() != 0) {
+            existingDoctor.setExperience(updateDoctor.getExperience());
+        }
+        if (updateDoctor.getDescription() != null) {
+            existingDoctor.setDescription(updateDoctor.getDescription());
+        }
+        return saveDoctor(existingDoctor);
     }
 
     @Override

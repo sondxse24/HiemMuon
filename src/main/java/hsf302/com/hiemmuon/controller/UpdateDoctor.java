@@ -1,7 +1,7 @@
 package hsf302.com.hiemmuon.controller;
 
-import hsf302.com.hiemmuon.pojo.Doctor;
-import hsf302.com.hiemmuon.pojo.User;
+import hsf302.com.hiemmuon.entity.Doctor;
+import hsf302.com.hiemmuon.entity.User;
 import hsf302.com.hiemmuon.service.DoctorServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
