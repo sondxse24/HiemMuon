@@ -19,6 +19,6 @@ public class ReadDoctor {
     public String listDoctors(Model model) {
         List<Doctor> doctors = doctorRepository.findByIsActiveTrue();
         model.addAttribute("doctors", doctors);
-        return "menuDoctor";
+        return "readDoctor";
     }
 }

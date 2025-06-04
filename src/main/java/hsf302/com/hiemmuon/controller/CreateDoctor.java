@@ -40,7 +40,7 @@ public class CreateDoctor {
                                Model model) {
         try {
             Doctor doctor = doctorService.createDoctor(user, description, experience);
-            return "loginForDoctor";
+            return "redirect:/doctors";
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
             model.addAttribute("roles", roleService.findAll());

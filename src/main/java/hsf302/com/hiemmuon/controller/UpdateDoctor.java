@@ -2,18 +2,14 @@ package hsf302.com.hiemmuon.controller;
 
 import hsf302.com.hiemmuon.pojo.Doctor;
 import hsf302.com.hiemmuon.pojo.User;
-import hsf302.com.hiemmuon.service.DoctorService;
 import hsf302.com.hiemmuon.service.DoctorServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
-public class UpdateController {
+public class UpdateDoctor {
 
     @Autowired
     private DoctorServiceImpl doctorService;
@@ -23,10 +19,10 @@ public class UpdateController {
         Doctor doctor = doctorService.getDoctorByUserId(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid doctor Id:" + id));
         model.addAttribute("doctor", doctor);
-        return "editDoctor";
+        return "updateDoctor";
     }
 
-    @PostMapping("/doctors/edit/{doctorId}")
+    @PutMapping("/doctors/edit/{doctorId}")
     public String updateDoctor(@PathVariable("doctorId") int id, @ModelAttribute Doctor doctor) throws Exception {
 
         Doctor existingDoctor = doctorService.getDoctorByUserId(id)

@@ -8,6 +8,7 @@
 <h2>Chỉnh sửa thông tin bác sĩ</h2>
 
 <form th:action="@{/doctors/edit/{id}(id=${doctor.doctorId})}" th:object="${doctor}" method="post">
+    <input type="hidden" name="_method" value="put"/>
     <label>Name: </label>
     <input type="text" th:field="*{user.name}"/><br/>
 

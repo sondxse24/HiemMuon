@@ -34,10 +34,15 @@
             <a th:href="@{/doctors/edit/{id}(id=${doctor.doctorId})}">Update</a>
         </td>
         <td>
-            <a th:href="@{'/doctors/delete/' + ${doctor.doctorId}}">Delete</a>
+            <form th:action="@{'/doctors/delete/' + ${doctor.doctorId}}" method="post" style="display:inline;">
+                <input type="hidden" name="_method" value="PATCH"/>
+                <button type="submit" onclick="return">Delete</button>
+            </form>
         </td>
     </tr>
     </tbody>
+
+    <a th:href="@{/createDoctor}">Create new Doctor account</a></br>
 </table>
 
 </body>
