@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @Controller
-public class DeleteDoctor {
+public class StatusDoctor {
     @Autowired
     private DoctorServiceImpl doctorService;
 
-    @PatchMapping("/doctors/delete/{doctorId}")
+    @PatchMapping("/delete/{doctorId}")
     public String deleteDoctor(@PathVariable("doctorId") int doctorId) throws Exception {
         Doctor doctor = doctorService.getDoctorByUserId(doctorId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid doctor Id: " + doctorId));
@@ -20,7 +20,18 @@ public class DeleteDoctor {
         doctor.setIsActive(false);
         doctorService.saveDoctor(doctor);
 
-        return "redirect:/doctors";
+        return "redirect:/manageDoctors";
+    }
+
+    @PatchMapping("/active/{doctorId}")
+    public String activeDoctor(@PathVariable("doctorId") int doctorId) throws Exception {
+        Doctor doctor = doctorService.getDoctorByUserId(doctorId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid doctor Id: " + doctorId));
+
+        doctor.setIsActive(true);
+        doctorService.saveDoctor(doctor);
+
+        return "redirect:/manageDoctors";
     }
 
 }

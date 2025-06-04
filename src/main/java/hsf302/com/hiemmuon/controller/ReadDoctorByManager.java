@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import java.util.List;
 
 @Controller
-public class ReadDoctor {
+public class ReadDoctorByManager {
 
     @Autowired
     private DoctorRepository doctorRepository;
@@ -19,6 +19,6 @@ public class ReadDoctor {
     public String listDoctors(Model model) {
         List<Doctor> doctors = doctorRepository.findByIsActiveTrue();
         model.addAttribute("doctors", doctors);
-        return "readDoctor";
+        return "manageDoctorByManager";
     }
 }

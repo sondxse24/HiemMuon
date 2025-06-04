@@ -14,6 +14,6 @@ public class MainController {
 
     @GetMapping("/menuDoctor")
     public String menuDoctorPage() {
-        return "readDoctor";
+        return "manageDoctorByManager";
     }
 }
