@@ -1,6 +1,7 @@
 package hsf302.com.hiemmuon.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import hsf302.com.hiemmuon.enums.Genders;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,8 +30,8 @@ public class User {
     private String name;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "gender")
-    private Gender gender;
+    @Column(name = "gender", nullable = true)
+    private Genders gender;
 
     @Column(name = "dob")
     private LocalDate dob;
@@ -50,14 +51,10 @@ public class User {
     @Column(name = "update_at")
     private LocalDate updateAt;
 
-    public enum Gender {
-        male, female
-    }
-
     public User() {
     }
 
-    public User(int userId, Role role, String name, Gender gender, LocalDate dob, String email, String phone, String password, LocalDate createAt, LocalDate updateAt) {
+    public User(int userId, Role role, String name, Genders gender, LocalDate dob, String email, String phone, String password, LocalDate createAt, LocalDate updateAt) {
         this.userId = userId;
         this.role = role;
         this.name = name;

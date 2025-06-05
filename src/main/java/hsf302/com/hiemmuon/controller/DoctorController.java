@@ -1,5 +1,7 @@
 package hsf302.com.hiemmuon.controller;
 
+import hsf302.com.hiemmuon.dto.ApiResponse;
+import hsf302.com.hiemmuon.dto.CreateDoctorRequest;
 import hsf302.com.hiemmuon.entity.Doctor;
 import hsf302.com.hiemmuon.service.DoctorService;
 import hsf302.com.hiemmuon.service.DoctorServiceImpl;
@@ -23,19 +25,14 @@ public class DoctorController {
         return doctorService.findAll();
     }
 
-//    @PostMapping
-//    public ResponseEntity<?> createDoctor(
-//            @RequestBody Doctor request) {
-//        try {
-//            Doctor doctor = doctorService.createDoctor(
-//                    request.getUser(),
-//                    request.getDescription(),
-//                    request.getExperience());
-//            return ResponseEntity.ok(doctor);
-//        } catch (Exception e) {
-//            return ResponseEntity.badRequest().body(e.getMessage());
-//        }
-//    }
+    @PostMapping
+    public void createDoctor(@RequestBody CreateDoctorRequest request) {
+        try {
+            doctorService.createDoctor(request);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+    }
 
     @PutMapping("/{doctorId}")
     public ResponseEntity<?> updateDoctor(
@@ -49,16 +46,26 @@ public class DoctorController {
     }
 
     @PatchMapping("/{doctorId}/status")
-    public ResponseEntity<?> deactivateDoctor(
+    public ResponseEntity<ApiResponse<?>> updateDoctorStatus(
             @PathVariable("doctorId") int doctorId,
             @RequestParam("active") boolean active) {
-        Doctor doctor = doctorService.getDoctorByUserId(doctorId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid doctor ID: " + doctorId));
+        try {
+            Doctor updatedDoctor = doctorService.updateDoctorActive(doctorId, active);
+            String statusText = active ? "activated" : "deactivated";
 
-        doctor.setIsActive(active);
-        doctorService.saveDoctor(doctor);
-
-        String statusText = active ? "activated" : "deactivated";
-        return ResponseEntity.ok().body("Doctor " + statusText + " successfully.");
+            ApiResponse<Doctor> response = new ApiResponse<>(
+                    200,
+                    "Doctor" + updatedDoctor.getUser().getName() + " has been " + statusText,
+                    updatedDoctor
+            );
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            ApiResponse<?> errorResponse = new ApiResponse<>(
+                    400,
+                    "Error: " + e.getMessage(),
+                    e.getMessage()
+            );
+            return ResponseEntity.badRequest().body(errorResponse);
+        }
     }
 }

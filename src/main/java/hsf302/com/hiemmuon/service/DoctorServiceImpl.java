@@ -1,5 +1,6 @@
 package hsf302.com.hiemmuon.service;
 
+import hsf302.com.hiemmuon.dto.CreateDoctorRequest;
 import hsf302.com.hiemmuon.entity.Doctor;
 import hsf302.com.hiemmuon.entity.Role;
 import hsf302.com.hiemmuon.entity.User;
@@ -18,8 +19,10 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Autowired
     private RoleRepository roleRepository;
+
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private DoctorRepository doctorRepository;
 
@@ -35,6 +38,26 @@ public class DoctorServiceImpl implements DoctorService {
     @Override
     public List<Doctor> findAll() {
         return doctorRepository.findAll();
+    }
+
+    @Override
+    public void createDoctor(CreateDoctorRequest request) {
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new IllegalArgumentException("Email already exists");
+        }
+
+        User user = new User();
+        user.setEmail(request.getEmail());
+        user.setPassword(request.getPassword());
+        user.setRole(roleRepository.findByRoleName("doctor"));
+
+        User savedUser = userRepository.save(user);
+
+        Doctor doctor = new Doctor();
+        doctor.setUser(savedUser);
+        doctor.setIsActive(true);
+
+        doctorRepository.save(doctor);
     }
 
     @Override
@@ -66,26 +89,12 @@ public class DoctorServiceImpl implements DoctorService {
         return saveDoctor(existingDoctor);
     }
 
-//    @Override
-//    public Doctor createDoctor(User user, String description, int experience) throws Exception {
-//        if (userRepository.existsByEmail(user.getEmail())) {
-//            throw new Exception("Email đã tồn tại!");
-//        }
-//
-//        user.setCreateAt(LocalDate.now());
-//        user.setUpdateAt(LocalDate.now());
-//
-//        Role role = roleRepository.findByRoleName("doctor");
-//        user.setRole(role);
-//
-//        User savedUser = userRepository.save(user);
-//
-//        Doctor doctor = new Doctor();
-//        doctor.setUser(savedUser);
-//        doctor.setDescription(description);
-//        doctor.setExperience(experience);
-//        doctor.setIsActive(true);
-//
-//        return doctorRepository.save(doctor);
-//    }
+    @Override
+    public Doctor updateDoctorActive(int id, boolean active) {
+        Doctor doctor = getDoctorByUserId(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid doctor ID: " + id));
+        ;
+        doctor.setIsActive(active);
+        return saveDoctor(doctor);
+    }
 }
