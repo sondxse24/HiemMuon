@@ -21,6 +21,6 @@ public interface DoctorService {
 
     Doctor updateDoctorActive(int id, boolean active);
 
-    void createDoctor(CreateDoctorDTO request);
+    Doctor createDoctor(CreateDoctorDTO request);
 }
 

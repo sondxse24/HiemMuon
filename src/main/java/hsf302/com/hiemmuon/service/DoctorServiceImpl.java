@@ -40,7 +40,7 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public void createDoctor(CreateDoctorDTO request) {
+    public Doctor createDoctor(CreateDoctorDTO request) {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new IllegalArgumentException("Email already exists");
         }
@@ -56,7 +56,7 @@ public class DoctorServiceImpl implements DoctorService {
         doctor.setUser(savedUser);
         doctor.setIsActive(true);
 
-        doctorRepository.save(doctor);
+        return doctorRepository.save(doctor);
     }
 
     @Override
