@@ -2,6 +2,7 @@ package hsf302.com.hiemmuon.controller;
 
 import hsf302.com.hiemmuon.entity.Doctor;
 import hsf302.com.hiemmuon.service.DoctorService;
+import hsf302.com.hiemmuon.service.DoctorServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,26 +16,26 @@ import java.util.List;
 public class DoctorController {
 
     @Autowired
-    private DoctorService doctorService;
+    private DoctorServiceImpl doctorService;
 
     @GetMapping
-    public List<Doctor> manageDoctors() {
+    public List<Doctor> getAllDoctors() {
         return doctorService.findAll();
     }
 
-    @PostMapping
-    public ResponseEntity<?> createDoctor(
-            @RequestBody Doctor request) {
-        try {
-            Doctor doctor = doctorService.createDoctor(
-                    request.getUser(),
-                    request.getDescription(),
-                    request.getExperience());
-            return ResponseEntity.ok(doctor);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
+//    @PostMapping
+//    public ResponseEntity<?> createDoctor(
+//            @RequestBody Doctor request) {
+//        try {
+//            Doctor doctor = doctorService.createDoctor(
+//                    request.getUser(),
+//                    request.getDescription(),
+//                    request.getExperience());
+//            return ResponseEntity.ok(doctor);
+//        } catch (Exception e) {
+//            return ResponseEntity.badRequest().body(e.getMessage());
+//        }
+//    }
 
     @PutMapping("/{doctorId}")
     public ResponseEntity<?> updateDoctor(

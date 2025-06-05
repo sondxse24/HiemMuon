@@ -66,38 +66,26 @@ public class DoctorServiceImpl implements DoctorService {
         return saveDoctor(existingDoctor);
     }
 
-    @Override
-    public Doctor loginDoctor(String email, String password) {
-        Optional<Doctor> optionalDoctor = doctorRepository.findByUserEmail(email);
-        if (optionalDoctor.isPresent()) {
-            Doctor doctor = optionalDoctor.get();
-            if (doctor.getUser().getPassword().equals(password)) {
-                return doctor;
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public Doctor createDoctor(User user, String description, int experience) throws Exception {
-        if (userRepository.existsByEmail(user.getEmail())) {
-            throw new Exception("Email đã tồn tại!");
-        }
-
-        user.setCreateAt(LocalDate.now());
-        user.setUpdateAt(LocalDate.now());
-
-        Role role = roleRepository.findByRoleName("doctor");
-        user.setRole(role);
-
-        User savedUser = userRepository.save(user);
-
-        Doctor doctor = new Doctor();
-        doctor.setUser(savedUser);
-        doctor.setDescription(description);
-        doctor.setExperience(experience);
-        doctor.setIsActive(true);
-
-        return doctorRepository.save(doctor);
-    }
+//    @Override
+//    public Doctor createDoctor(User user, String description, int experience) throws Exception {
+//        if (userRepository.existsByEmail(user.getEmail())) {
+//            throw new Exception("Email đã tồn tại!");
+//        }
+//
+//        user.setCreateAt(LocalDate.now());
+//        user.setUpdateAt(LocalDate.now());
+//
+//        Role role = roleRepository.findByRoleName("doctor");
+//        user.setRole(role);
+//
+//        User savedUser = userRepository.save(user);
+//
+//        Doctor doctor = new Doctor();
+//        doctor.setUser(savedUser);
+//        doctor.setDescription(description);
+//        doctor.setExperience(experience);
+//        doctor.setIsActive(true);
+//
+//        return doctorRepository.save(doctor);
+//    }
 }
