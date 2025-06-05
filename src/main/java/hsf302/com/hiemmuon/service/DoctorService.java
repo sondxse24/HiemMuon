@@ -15,7 +15,7 @@ public interface DoctorService {
 
     Optional<Doctor> getDoctorByUserId(int userId);
 
-    Doctor saveDoctor(Doctor doctor) throws Exception;
+    Doctor saveDoctor(Doctor doctor);
 
     List<Doctor> findAll();
 
