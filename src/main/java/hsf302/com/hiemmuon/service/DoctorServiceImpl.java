@@ -95,4 +95,9 @@ public class DoctorServiceImpl implements DoctorService {
         doctor.setIsActive(active);
         return saveDoctor(doctor);
     }
+
+    @Override
+    public List<Doctor> getDoctorByDescription(String description) {
+        return doctorRepository.findByDescription(description);
+    }
 }

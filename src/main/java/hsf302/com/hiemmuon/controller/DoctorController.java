@@ -67,4 +67,18 @@ public class DoctorController {
         );
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/description")
+    public ResponseEntity<ApiResponse<?>> getDoctorBySpecialization(
+            @RequestParam("description") String description) {
+
+        List<Doctor> doctors = doctorService.getDoctorByDescription(description);
+
+        ApiResponse<List<Doctor>> response = new ApiResponse<>(
+                200,
+                "Doctors with specialization " + description + " retrieved successfully",
+                doctors
+        );
+        return ResponseEntity.ok(response);
+    }
 }
