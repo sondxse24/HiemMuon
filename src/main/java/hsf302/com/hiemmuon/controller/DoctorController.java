@@ -1,9 +1,9 @@
 package hsf302.com.hiemmuon.controller;
 
 import hsf302.com.hiemmuon.dto.ApiResponse;
-import hsf302.com.hiemmuon.dto.CreateDoctorRequest;
+import hsf302.com.hiemmuon.dto.CreateDoctorDTO;
+import hsf302.com.hiemmuon.dto.UpdateDoctorDTO;
 import hsf302.com.hiemmuon.entity.Doctor;
-import hsf302.com.hiemmuon.service.DoctorService;
 import hsf302.com.hiemmuon.service.DoctorServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,23 +25,36 @@ public class DoctorController {
         return doctorService.findAll();
     }
 
-    @PostMapping
-    public void createDoctor(@RequestBody CreateDoctorRequest request) {
-        try {
-            doctorService.createDoctor(request);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-        }
-    }
+//    @PostMapping
+//    public ResponseEntity<ApiResponse<?>> createDoctor(@RequestBody CreateDoctorDTO request) {
+//        try {
+//            doctorService.createDoctor(request);
+//        } catch (Exception e) {
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+//        }
+//    }
 
     @PutMapping("/{doctorId}")
-    public ResponseEntity<?> updateDoctor(
-            @PathVariable("doctorId") int id, @RequestBody Doctor updateDoctor) {
+    public ResponseEntity<ApiResponse<?>> updateDoctor(
+            @PathVariable("doctorId") int id,
+            @RequestBody UpdateDoctorDTO updateDoctorDTO) {
         try {
-            Doctor savedDoctor = doctorService.updateDoctor(id, updateDoctor);
-            return ResponseEntity.ok(savedDoctor);
+            Doctor savedDoctor = doctorService.updateDoctor(id, updateDoctorDTO);
+
+            ApiResponse<Doctor> response = new ApiResponse<>(
+                    200,
+                    "Doctor updated successfully",
+                    savedDoctor
+            );
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+
+            ApiResponse<?> errResponse = new ApiResponse<>(
+                    400,
+                    "Error: " + e.getMessage(),
+                    e.getMessage()
+            );
+            return ResponseEntity.badRequest().body(errResponse);
         }
     }
 
@@ -55,7 +68,7 @@ public class DoctorController {
 
             ApiResponse<Doctor> response = new ApiResponse<>(
                     200,
-                    "Doctor" + updatedDoctor.getUser().getName() + " has been " + statusText,
+                    "Doctor " + updatedDoctor.getUser().getName() + " has been " + statusText,
                     updatedDoctor
             );
             return ResponseEntity.ok(response);

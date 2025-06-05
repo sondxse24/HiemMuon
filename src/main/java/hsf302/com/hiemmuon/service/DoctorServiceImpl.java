@@ -1,8 +1,8 @@
 package hsf302.com.hiemmuon.service;
 
-import hsf302.com.hiemmuon.dto.CreateDoctorRequest;
+import hsf302.com.hiemmuon.dto.CreateDoctorDTO;
+import hsf302.com.hiemmuon.dto.UpdateDoctorDTO;
 import hsf302.com.hiemmuon.entity.Doctor;
-import hsf302.com.hiemmuon.entity.Role;
 import hsf302.com.hiemmuon.entity.User;
 import hsf302.com.hiemmuon.repository.DoctorRepository;
 import hsf302.com.hiemmuon.repository.RoleRepository;
@@ -10,7 +10,6 @@ import hsf302.com.hiemmuon.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,7 +40,7 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public void createDoctor(CreateDoctorRequest request) {
+    public void createDoctor(CreateDoctorDTO request) {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new IllegalArgumentException("Email already exists");
         }
@@ -61,30 +60,29 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public Doctor updateDoctor(int id, Doctor updateDoctor) {
+    public Doctor updateDoctor(int id, UpdateDoctorDTO updateDoctorDTO) {
         Doctor existingDoctor = getDoctorByUserId(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid doctor Id: " + id));
 
         User existingUser = existingDoctor.getUser();
-        User incomingUser = updateDoctor.getUser();
 
-        if (incomingUser != null) {
-            if (incomingUser.getName() != null) {
-                existingUser.setName(incomingUser.getName());
-            }
-            if (incomingUser.getPhone() != null) {
-                existingUser.setPhone(incomingUser.getPhone());
-            }
-            if (incomingUser.getPassword() != null) {
-                existingUser.setPassword(incomingUser.getPassword());
-            }
+        if (updateDoctorDTO.getPassword() != null) {
+            existingUser.setPassword(updateDoctorDTO.getPassword());
         }
-
-        if (updateDoctor.getExperience() != 0) {
-            existingDoctor.setExperience(updateDoctor.getExperience());
+        if (updateDoctorDTO.getName() != null) {
+            existingUser.setName(updateDoctorDTO.getName());
         }
-        if (updateDoctor.getDescription() != null) {
-            existingDoctor.setDescription(updateDoctor.getDescription());
+        if (updateDoctorDTO.getPhone() != null) {
+            existingUser.setPhone(updateDoctorDTO.getPhone());
+        }
+        if (updateDoctorDTO.getDob() != null) {
+            existingUser.setDob(updateDoctorDTO.getDob());
+        }
+        if (updateDoctorDTO.getGender() != null) {
+            existingUser.setGender(updateDoctorDTO.getGender());
+        }
+        if (updateDoctorDTO.getDescription() != null) {
+            existingDoctor.setDescription(updateDoctorDTO.getDescription());
         }
         return saveDoctor(existingDoctor);
     }
