@@ -8,10 +8,10 @@ import hsf302.com.hiemmuon.repository.DoctorRepository;
 import hsf302.com.hiemmuon.repository.RoleRepository;
 import hsf302.com.hiemmuon.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class DoctorServiceImpl implements DoctorService {
@@ -24,6 +24,9 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Autowired
     private DoctorRepository doctorRepository;
+
+//    @Autowired
+//    private PasswordEncoder passwordEncoder;
 
     public Doctor getDoctorByUserId(int userId) {
         return doctorRepository.findByUserUserId(userId);
@@ -47,6 +50,9 @@ public class DoctorServiceImpl implements DoctorService {
 
         User user = new User();
         user.setEmail(request.getEmail());
+
+//        String encodedPassword = passwordEncoder.encode(request.getPassword());
+//        user.setPassword(encodedPassword);
         user.setPassword(request.getPassword());
         user.setRole(roleRepository.findByRoleName("doctor"));
 
