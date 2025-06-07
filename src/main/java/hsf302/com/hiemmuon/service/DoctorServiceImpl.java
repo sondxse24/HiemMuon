@@ -8,7 +8,7 @@ import hsf302.com.hiemmuon.repository.DoctorRepository;
 import hsf302.com.hiemmuon.repository.RoleRepository;
 import hsf302.com.hiemmuon.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,8 +25,8 @@ public class DoctorServiceImpl implements DoctorService {
     @Autowired
     private DoctorRepository doctorRepository;
 
-//    @Autowired
-//    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public Doctor getDoctorByUserId(int userId) {
         return doctorRepository.findByUserUserId(userId);
@@ -51,9 +51,8 @@ public class DoctorServiceImpl implements DoctorService {
         User user = new User();
         user.setEmail(request.getEmail());
 
-//        String encodedPassword = passwordEncoder.encode(request.getPassword());
-//        user.setPassword(encodedPassword);
-        user.setPassword(request.getPassword());
+        String encodedPassword = passwordEncoder.encode(request.getPassword());
+        user.setPassword(encodedPassword);
         user.setRole(roleRepository.findByRoleName("doctor"));
 
         User savedUser = userRepository.save(user);
@@ -73,15 +72,20 @@ public class DoctorServiceImpl implements DoctorService {
 
         if (updateDoctorDTO.getPassword() != null) {
             existingUser.setPassword(updateDoctorDTO.getPassword());
-        } else if (updateDoctorDTO.getName() != null) {
+        }
+        if (updateDoctorDTO.getName() != null) {
             existingUser.setName(updateDoctorDTO.getName());
-        } else if (updateDoctorDTO.getPhone() != null) {
+        }
+        if (updateDoctorDTO.getPhone() != null) {
             existingUser.setPhone(updateDoctorDTO.getPhone());
-        } else if (updateDoctorDTO.getDob() != null) {
+        }
+        if (updateDoctorDTO.getDob() != null) {
             existingUser.setDob(updateDoctorDTO.getDob());
-        } else if (updateDoctorDTO.getGender() != null) {
+        }
+        if (updateDoctorDTO.getGender() != null) {
             existingUser.setGender(updateDoctorDTO.getGender());
-        } else if (updateDoctorDTO.getDescription() != null) {
+        }
+        if (updateDoctorDTO.getDescription() != null) {
             existingDoctor.setDescription(updateDoctorDTO.getDescription());
         }
         return saveDoctor(existingDoctor);
@@ -90,7 +94,6 @@ public class DoctorServiceImpl implements DoctorService {
     @Override
     public Doctor updateDoctorActive(int id, boolean active) {
         Doctor doctor = getDoctorByUserId(id);
-        ;
         doctor.setIsActive(active);
         return saveDoctor(doctor);
     }
