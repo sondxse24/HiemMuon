@@ -24,7 +24,7 @@ public class HandlerException {
     public ResponseEntity<ApiResponse<?>> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
         ApiResponse<?> response = new ApiResponse<>(
                 400,
-                "Sai kiểu dữ liệu đầu vào: " + ex.getMessage(),
+                "Error type input: " + ex.getMessage(),
                 null
         );
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);

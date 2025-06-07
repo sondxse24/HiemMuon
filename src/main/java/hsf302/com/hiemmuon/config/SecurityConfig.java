@@ -10,6 +10,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -22,31 +23,34 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/login/**").permitAll()
+                                .requestMatchers("/api/login/**").permitAll()
 
-                        // Customer: chỉ đọc
-                        .requestMatchers(HttpMethod.GET,
-                                "/api/doctor/active",
-                                "/api/doctor/{id}",
-                                "/api/doctor/description"
-                        ).hasRole("CUSTOMER")
+//                        .requestMatchers(HttpMethod.GET,
+//                                "/api/doctors/active",
+//                                "/api/doctors/description"
+//                        ).hasRole("CUSTOMER")
+//
+//                        .requestMatchers(HttpMethod.PUT, "/api/doctors/**").hasRole("DOCTOR")
 
-                        .requestMatchers(HttpMethod.PUT, "/api/doctor/**").hasRole("DOCTOR")
+                                .requestMatchers(HttpMethod.GET,
+                                        "/api/doctors/all",
+                                        "/api/doctors/active",
+                                        "/api/doctors/description").hasRole("MANAGER")
+                                .requestMatchers(HttpMethod.PATCH, "/api/doctors/status/**").hasRole("MANAGER")
+                                .requestMatchers(HttpMethod.POST, "/api/doctors").hasRole("MANAGER")
+                                .requestMatchers(HttpMethod.PUT, "/api/doctors/**").hasRole("MANAGER")
 
-                        .requestMatchers(HttpMethod.GET, "/api/doctor").hasRole("MANAGER")
-                        .requestMatchers(HttpMethod.PATCH, "/api/doctor/status/**").hasRole("MANAGER")
-                        .requestMatchers(HttpMethod.POST, "/api/doctor").hasRole("MANAGER")
-
-                        .anyRequest().authenticated()
+                                .anyRequest().authenticated()
                 )
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
-
 }

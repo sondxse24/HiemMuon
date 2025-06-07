@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/login")
 public class LoginController {
@@ -29,13 +31,15 @@ public class LoginController {
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<String>> login(@RequestBody LoginManager request) {
-        hsf302.com.hiemmuon.entity.User user = userRepository.findByEmail(request.getEmail());
+        User user = userRepository.findByEmail(request.getEmail());
 
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new BadCredentialsException("Mật khẩu không đúng");
+        if (user == null || !passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new BadCredentialsException("Email hoặc mật khẩu không đúng");
         }
 
-        String token = jwtUtil.generateToken(user.getEmail());
+        List<String> roles = List.of("ROLE_" + user.getRole().getRoleName().toUpperCase());
+
+        String token = jwtUtil.generateToken(user.getEmail(), roles);
 
         ApiResponse<String> response = new ApiResponse<>(
                 200,
@@ -45,5 +49,6 @@ public class LoginController {
 
         return ResponseEntity.ok(response);
     }
+
 
 }
