@@ -34,6 +34,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String authHeader = request.getHeader("Authorization");
 
+        String path = request.getRequestURI();
+
+        if (path.startsWith("/swagger-ui") ||
+                path.startsWith("/v3/api-docs") ||
+                path.startsWith("/swagger-resources") ||
+                path.startsWith("/webjars")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
             try {
@@ -63,7 +73,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 return;
             }
         }
-
         filterChain.doFilter(request, response);
     }
 }
