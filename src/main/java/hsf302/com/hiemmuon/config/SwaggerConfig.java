@@ -8,7 +8,6 @@ import io.swagger.v3.oas.models.servers.Server;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -17,9 +16,6 @@ import java.util.List;
 @Configuration
 @OpenAPIDefinition
 public class SwaggerConfig {
-
-    @Value("${app.swagger.ngrok-url:http://localhost:8080}")
-    private String ngrokUrl;
 
     @Bean
     public OpenAPI customOpenAPI() {
@@ -33,7 +29,7 @@ public class SwaggerConfig {
                                 .name("API License")
                                 .url("http://domain.com/license")))
                 .servers(List.of(
-                        new Server().url("http://localhost:8080").description("Local server")
+                        new Server().url("https://localhost:8080").description("Production server")
                 ))
                 .addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
                 .components(new Components()
