@@ -39,13 +39,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .cors(cors -> {})
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/login/**").permitAll()
 
                         .requestMatchers(HttpMethod.GET, "/api/doctors/active").permitAll()
-
                         .requestMatchers(HttpMethod.GET, "/api/doctors/all").hasRole("MANAGER")
                         .requestMatchers(HttpMethod.PATCH, "/api/doctors/status/**").hasRole("MANAGER")
                         .requestMatchers(HttpMethod.POST, "/api/doctors").hasRole("MANAGER")
@@ -61,7 +60,9 @@ public class SecurityConfig {
                                 "/webjars/**",
                                 "/v3/api-docs.yaml"
                         ).permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .anyRequest().authenticated()
+
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
@@ -72,7 +73,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOriginPatterns(List.of("*"));
+        config.setAllowedOrigins(List.of("http://localhost:8080", "http://localhost:3000"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);

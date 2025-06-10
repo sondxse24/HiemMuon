@@ -32,9 +32,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        String authHeader = request.getHeader("Authorization");
-
         String path = request.getRequestURI();
+
+        String authHeader = request.getHeader("Authorization");
 
         if (path.startsWith("/swagger-ui") ||
                 path.startsWith("/v3/api-docs") ||
@@ -44,36 +44,37 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            System.out.println("🚫 Không có JWT hoặc không đúng định dạng.");
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        try {
             String token = authHeader.substring(7);
-            try {
-                Claims claims = Jwts.parserBuilder()
-                        .setSigningKey(secretKey.getBytes(StandardCharsets.UTF_8))
-                        .build()
-                        .parseClaimsJws(token)
-                        .getBody();
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(secretKey.getBytes(StandardCharsets.UTF_8))
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
 
-                String username = claims.getSubject();
-                List<String> roles = claims.get("roles", List.class);
-                if (roles == null) {
-                    roles = List.of();
-                }
-                List<GrantedAuthority> authorities = roles.stream()
-                        .map(SimpleGrantedAuthority::new)
-                        .collect(Collectors.toList());
+            String username = claims.getSubject();
+            List<String> roles = claims.get("roles", List.class);
+            if (roles == null) roles = List.of();
 
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(username, null, authorities);
+            List<GrantedAuthority> authorities = roles.stream()
+                    .map(SimpleGrantedAuthority::new)
+                    .collect(Collectors.toList());
 
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-                System.out.println("✅ Jwt Filter Authorities: " + authorities);
-            } catch (JwtException e) {
-                logger.error("Invalid or expired JWT token: " + e.getMessage());
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                return;
-            }
+            UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(username, null, authorities);
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            System.out.println("✅ Jwt Filter Authorities: " + authorities);
+        } catch (JwtException e) {
+            logger.warn("⚠️ Invalid JWT: " + e.getMessage());
         }
         filterChain.doFilter(request, response);
     }
 }
-
+    

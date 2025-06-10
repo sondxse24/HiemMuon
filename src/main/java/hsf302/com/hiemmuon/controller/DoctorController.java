@@ -96,7 +96,7 @@ public class DoctorController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping()
+    @GetMapping("/active")
     public ResponseEntity<ApiResponse<?>> getDoctorByStatus() {
         List<Doctor> doctors = doctorService.getDoctorByIsActive();
 

@@ -16,9 +16,6 @@ import java.util.List;
 @Configuration
 public class SwaggerConfig {
 
-    @Value("${swagger.default-url}")
-    private String defaultUrl;
-
     @Bean
     public OpenAPI customOpenAPI() {
         final String securitySchemeName = "bearerAuth";
@@ -30,8 +27,7 @@ public class SwaggerConfig {
                         .description("Tài liệu API cho hệ thống quản lý y tế")
                         .license(new License().name("API License").url("http://domain.com/license")))
                 .servers(List.of(
-                        new Server().url("http://localhost:8080").description("Localhost"),
-                        new Server().url(defaultUrl).description("Public URL từ ngrok")
+                        new Server().url("http://localhost:8080").description("Localhost")
                 ))
                 .addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
                 .components(new Components()
