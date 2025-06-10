@@ -1,5 +1,4 @@
-FROM maven:3.9.6-openjdk-21 AS build
-
+FROM openjdk:21-jdk-slim AS build
 WORKDIR /app
 
 COPY . .
