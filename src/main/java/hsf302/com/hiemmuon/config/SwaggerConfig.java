@@ -1,6 +1,5 @@
 package hsf302.com.hiemmuon.config;
 
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
@@ -8,28 +7,31 @@ import io.swagger.v3.oas.models.servers.Server;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
 
 @Configuration
-@OpenAPIDefinition
 public class SwaggerConfig {
+
+    @Value("${swagger.default-url}")
+    private String defaultUrl;
 
     @Bean
     public OpenAPI customOpenAPI() {
         final String securitySchemeName = "bearerAuth";
+
         return new OpenAPI()
                 .info(new Info()
                         .title("Hệ thống Quản lý Y tế")
                         .version("1.0")
                         .description("Tài liệu API cho hệ thống quản lý y tế")
-                        .license(new License()
-                                .name("API License")
-                                .url("http://domain.com/license")))
+                        .license(new License().name("API License").url("http://domain.com/license")))
                 .servers(List.of(
-                        new Server().url("https://localhost:8080").description("Production server")
+                        new Server().url("http://localhost:8080").description("Localhost"),
+                        new Server().url(defaultUrl).description("Public URL từ ngrok")
                 ))
                 .addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
                 .components(new Components()

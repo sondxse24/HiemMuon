@@ -4,6 +4,7 @@ import hsf302.com.hiemmuon.dto.ApiResponse;
 import hsf302.com.hiemmuon.dto.LoginRequest;
 import hsf302.com.hiemmuon.entity.User;
 import hsf302.com.hiemmuon.repository.UserRepository;
+import hsf302.com.hiemmuon.service.UserServiceImpl;
 import hsf302.com.hiemmuon.utils.JwtUtil;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ import java.util.List;
 @RequestMapping("/api/login")
 public class LoginController {
     @Autowired
-    private UserRepository userRepository;
+    private UserServiceImpl userService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -29,7 +30,7 @@ public class LoginController {
 
     @PostMapping("/manager")
     public ResponseEntity<ApiResponse<String>> login(@RequestBody @Valid LoginRequest request) {
-        User user = userRepository.findByEmail(request.getEmail());
+        User user = userService.getUserByEmail(request.getEmail());
 
         if (user == null || !passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new BadCredentialsException("Email hoặc mật khẩu không đúng");
@@ -50,7 +51,7 @@ public class LoginController {
 
     @PostMapping("/doctor")
     public ResponseEntity<ApiResponse<String>> loginDoctor(@RequestBody @Valid LoginRequest request) {
-        User user = userRepository.findByEmail(request.getEmail());
+        User user = userService.getUserByEmail(request.getEmail());
 
         if (user == null || !passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new BadCredentialsException("Email hoặc mật khẩu không đúng");
@@ -71,7 +72,7 @@ public class LoginController {
 
     @PostMapping("/customer")
     public ResponseEntity<ApiResponse<String>> loginCustomer(@RequestBody @Valid LoginRequest request) {
-        User user = userRepository.findByEmail(request.getEmail());
+        User user = userService.getUserByEmail(request.getEmail());
 
         if (user == null || !passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new BadCredentialsException("Email hoặc mật khẩu không đúng");
