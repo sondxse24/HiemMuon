@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface TreatmentServiceRepository extends JpaRepository<TreatmentService, Integer> {
     List<TreatmentService> findAll();
+    TreatmentService findByName(String name);
 }
