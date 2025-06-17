@@ -43,7 +43,7 @@ public class DoctorService {
         final String token = authHeader.substring(7);
         Claims claims = jwtService.extractAllClaims(token);
 
-        Object doctorIdObj = claims.get("doctorId");
+        Object doctorIdObj = claims.get("userId");
         Integer doctorId = Integer.parseInt(doctorIdObj.toString());
         return doctorRepository.findById(doctorId).get();
     }
