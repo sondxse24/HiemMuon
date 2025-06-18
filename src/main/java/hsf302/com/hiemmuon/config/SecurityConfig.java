@@ -92,6 +92,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET,    "api/appointment-services/appointments/history").hasRole("DOCTOR")
                         .requestMatchers(HttpMethod.GET,    "api/appointment-services/appointments/overview").hasRole("MANAGER")
 
+                        .requestMatchers(HttpMethod.GET,
+                                "api/cycles/me").hasAnyRole("CUSTOMER", "DOCTOR")
+
                         .requestMatchers(
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",

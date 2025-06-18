@@ -1,7 +1,9 @@
 package hsf302.com.hiemmuon.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
@@ -9,6 +11,8 @@ import java.time.LocalDate;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "cycles")
 public class Cycle {
 
@@ -20,6 +24,10 @@ public class Cycle {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "doctor_id", nullable = false)
+    private Doctor doctor;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "service_id", nullable = false)
@@ -40,16 +48,5 @@ public class Cycle {
 
     public enum Status {
         ongoing, finished, stopped
-    }
-
-    public Cycle() {
-    }
-
-    public Cycle(Customer customer, TreatmentService service, LocalDate startdate, Status status, String note) {
-        this.customer = customer;
-        this.service = service;
-        this.startdate = startdate;
-        this.status = status;
-        this.note = note;
     }
 }
