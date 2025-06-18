@@ -9,9 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.List;
 
-//@EnableScheduling
 @SpringBootApplication(scanBasePackages = "hsf302.com.hiemmuon")
 public class HiemMuonApplication
 //        implements CommandLineRunner

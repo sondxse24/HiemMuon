@@ -62,6 +62,9 @@ public class SecurityConfig {
                                 "/api/doctors",
                                 "/api/treatment-services").hasRole("MANAGER")
 
+                        .requestMatchers(HttpMethod.GET,
+                                "/api/doctors/me").hasRole("DOCTOR")
+
                         .requestMatchers(HttpMethod.PUT,
                                 "/api/doctors/me").hasRole("DOCTOR")
 
@@ -80,6 +83,14 @@ public class SecurityConfig {
 
                         .requestMatchers(HttpMethod.GET,
                                 "/api/treatment-services/**").permitAll()
+
+                        .requestMatchers(HttpMethod.POST,   "api/appointment-services/register/appointments").hasRole("CUSTOMER")
+                        .requestMatchers(HttpMethod.POST,   "api/appointment-services/appointments/reexam").hasRole("DOCTOR")
+                        .requestMatchers(HttpMethod.PATCH,  "api/appointment-services/appointments/cancel/{appointmentId}").hasRole("CUSTOMER")
+                        .requestMatchers(HttpMethod.GET,    "api/appointment-services/doctors/{doctorId}/available-schedules").hasRole("CUSTOMER")
+                        .requestMatchers(HttpMethod.GET,    "api/appointment-services/appointments/reexam").hasRole("CUSTOMER")
+                        .requestMatchers(HttpMethod.GET,    "api/appointment-services/appointments/history").hasRole("DOCTOR")
+                        .requestMatchers(HttpMethod.GET,    "api/appointment-services/appointments/overview").hasRole("MANAGER")
 
                         .requestMatchers(
                                 "/swagger-ui/**",
