@@ -6,10 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 
+//@EnableScheduling
 @SpringBootApplication(scanBasePackages = "hsf302.com.hiemmuon")
 public class HiemMuonApplication
 //        implements CommandLineRunner
@@ -19,11 +21,11 @@ public class HiemMuonApplication
         SpringApplication.run(HiemMuonApplication.class, args);
     }
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+//    @Autowired
+//    private UserRepository userRepository;
+//
+//    @Autowired
+//    private PasswordEncoder passwordEncoder;
 
 //    @Override
 //    public void run(String... args) throws Exception {

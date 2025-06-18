@@ -52,11 +52,7 @@ public class SecurityConfig {
                                 "/api/doctors/specification",
 
                                 "/api/register/customer",
-                                "/api/customer/info",
-
-                                "/api/treatment-services/id/**",
-                                "/api/treatment-services/name/**",
-                                "/api/treatment-services/active").permitAll()
+                                "/api/customer/info").permitAll()
 
                         .requestMatchers(HttpMethod.GET,
                                 "/api/doctors/all",
@@ -78,8 +74,12 @@ public class SecurityConfig {
 
                         .requestMatchers(HttpMethod.GET,
                                 "/api/admin/customers").hasRole("ADMIN")
+
                         .requestMatchers(HttpMethod.PUT,
                                 "/api/customer/update").hasRole("CUSTOMER")
+
+                        .requestMatchers(HttpMethod.GET,
+                                "/api/treatment-services/**").permitAll()
 
                         .requestMatchers(
                                 "/swagger-ui/**",
