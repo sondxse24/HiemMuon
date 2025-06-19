@@ -1,6 +1,5 @@
 package hsf302.com.hiemmuon.config;
 
-import hsf302.com.hiemmuon.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -46,7 +45,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            System.out.println("🚫 Không có JWT hoặc không đúng định dạng.");
             filterChain.doFilter(request, response);
             return;
         }
