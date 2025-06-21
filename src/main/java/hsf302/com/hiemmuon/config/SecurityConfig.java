@@ -81,10 +81,11 @@ public class SecurityConfig {
 
 
                         .requestMatchers(HttpMethod.POST,
-                                "api/appointment-services/register/appointments").hasRole("CUSTOMER")
+                                "/api/appointment-services/register/appointments").hasRole("CUSTOMER")
 
                         .requestMatchers(HttpMethod.POST,
-                                "api/appointment-services/appointments/reexam").hasRole("DOCTOR")
+                                "/api/appointment-services/appointments/reexam",
+                                "/api/cycles/create").hasRole("DOCTOR")
 
                         .requestMatchers(HttpMethod.POST,
                                 "/api/doctors",
