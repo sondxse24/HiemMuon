@@ -12,4 +12,5 @@ public class AvailableScheduleDTO {
     private LocalDate date;
     private LocalTime startTime;
     private LocalTime endTime;
+    private boolean isStatus;
 }

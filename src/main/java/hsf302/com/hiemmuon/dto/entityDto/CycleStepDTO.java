@@ -15,6 +15,10 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class CycleStepDTO {
 
+    @NotNull(message = "ID chu kỳ không được để trống")
+    @Min(value = 1, message = "ID chu kỳ phải lớn hơn 0")
+    private int cycleId;
+
     @NotBlank(message = "Tên dịch vụ không được để trống")
     @Size(max = 100, message = "Tên dịch vụ không được vượt quá 100 ký tự")
     private String serive;

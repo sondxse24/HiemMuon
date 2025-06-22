@@ -51,6 +51,7 @@ public class CycleService {
     public CycleNoteDTO updateCycleNote(int cycleId, String note) {
         Cycle cycle = cycleRepository.findById(cycleId);
         cycle.setNote(note);
+        cycleRepository.save(cycle);
         return new CycleNoteDTO(cycle.getNote());
     }
 
