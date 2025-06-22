@@ -96,7 +96,7 @@ public class CycleService {
         cycle.setDoctor(doctor);
         cycle.setService(service);
         cycle.setStartdate(dto.getStartDate());
-        cycle.setEndDate(dto.getEndDate());
+        cycle.setEndDate(cycle.getStartdate().plusMonths(10));
         cycle.setNote(dto.getNote());
         cycle.setStatus(StatusCycle.ongoing);
 
@@ -118,9 +118,8 @@ public class CycleService {
 
             cycleStepRepository.save(cycleStep);
 
-            eventDate = eventDate.plusMonths(1);
+            eventDate = eventDate.plusMonths(2);
         }
-
         return savedCycle;
     }
 }
