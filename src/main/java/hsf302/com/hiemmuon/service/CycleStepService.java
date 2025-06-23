@@ -1,16 +1,21 @@
 package hsf302.com.hiemmuon.service;
 
 import hsf302.com.hiemmuon.dto.entityDto.CycleStepDTO;
+import hsf302.com.hiemmuon.dto.entityDto.MedicineDTO;
+import hsf302.com.hiemmuon.dto.entityDto.MedicineScheduleDTO;
 import hsf302.com.hiemmuon.entity.Cycle;
 import hsf302.com.hiemmuon.entity.CycleStep;
+import hsf302.com.hiemmuon.entity.MedicineSchedule;
 import hsf302.com.hiemmuon.enums.StatusCycle;
 import hsf302.com.hiemmuon.exception.NotFoundException;
 import hsf302.com.hiemmuon.repository.CycleRepository;
 import hsf302.com.hiemmuon.repository.CycleStepRepository;
+import hsf302.com.hiemmuon.repository.MedicineScheduleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CycleStepService {
@@ -20,6 +25,9 @@ public class CycleStepService {
 
     @Autowired
     private CycleRepository cycleRepository;
+
+    @Autowired
+    private MedicineScheduleRepository medicineScheduleRepository;
 
     public List<CycleStepDTO> getAllCycleStep(int cycleId) {
 
@@ -65,13 +73,36 @@ public class CycleStepService {
     }
 
     private CycleStepDTO convertToDTO(CycleStep cycleStep) {
+        List<MedicineSchedule> schedules = medicineScheduleRepository.findByCycleStep_StepId(cycleStep.getStepId());
+
+        List<MedicineScheduleDTO> medicineScheduleDTOs = schedules.stream().map(schedule -> {
+            List<MedicineDTO> medicineDTOList = List.of(
+                    new MedicineDTO(
+                            schedule.getMedicine().getName(),
+                            schedule.getMedicine().getDiscription(),
+                            schedule.getMedicine().getDose(),
+                            schedule.getMedicine().getFrequency()
+                    )
+            );
+
+            return new MedicineScheduleDTO(
+                    schedule.getMedicationId(),
+                    medicineDTOList,
+                    schedule.getStartdate(),
+                    schedule.getEnddate(),
+                    schedule.getNote()
+            );
+        }).collect(Collectors.toList());
+
         return new CycleStepDTO(
-                cycleStep.getStepOrder(),
+                cycleStep.getCycle().getCycleId(),
                 cycleStep.getCycle().getService().getName(),
                 cycleStep.getDescription(),
                 cycleStep.getEventdate(),
-                cycleStep.getStatusCycleStep()
+                cycleStep.getStatusCycleStep(),
+                medicineScheduleDTOs
         );
     }
+
 
 }
