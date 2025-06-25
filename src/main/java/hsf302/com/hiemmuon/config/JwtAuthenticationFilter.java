@@ -69,9 +69,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     new UsernamePasswordAuthenticationToken(username, null, authorities);
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            System.out.println("✅ Jwt Filter Authorities: " + authorities);
-            System.out.println("👤 JWT Roles: " + roles);
-
         } catch (JwtException e) {
             logger.warn("⚠️ Invalid JWT: " + e.getMessage());
         }
