@@ -102,7 +102,6 @@ public class CycleStepService {
                 cycleStep.getDescription(),
                 cycleStep.getEventdate(),
                 cycleStep.getStatusCycleStep(),
-                medicineScheduleDTOs,
                 cycleStep.getNote()
         );
     }

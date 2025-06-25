@@ -1,9 +1,7 @@
 package hsf302.com.hiemmuon.service;
 
 import hsf302.com.hiemmuon.dto.createDto.CreateCycleDTO;
-import hsf302.com.hiemmuon.dto.responseDto.CycleNoteDTO;
-import hsf302.com.hiemmuon.dto.responseDto.CycleOfCustomerDTO;
-import hsf302.com.hiemmuon.dto.responseDto.CycleOfDoctorDTO;
+import hsf302.com.hiemmuon.dto.responseDto.*;
 import hsf302.com.hiemmuon.entity.*;
 import hsf302.com.hiemmuon.enums.StatusCycle;
 import hsf302.com.hiemmuon.enums.StatusMedicineSchedule;
@@ -14,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -87,7 +86,7 @@ public class CycleService {
     }
 
     @Transactional
-    public Cycle createCycle(CreateCycleDTO dto, HttpServletRequest request) {
+    public CycleDTO createCycle(CreateCycleDTO dto, HttpServletRequest request) {
 
         User user = userService.getUserByJwt(request);
         Doctor doctor = user.getDoctor();
@@ -113,37 +112,38 @@ public class CycleService {
         List<TreatmentStep> treatmentSteps = treatmentStepRepository
                 .findByService_ServiceIdOrderByStepOrderAsc(service.getServiceId());
 
-        LocalDate eventDate = dto.getStartDate().plusMonths(2);
+        List<CycleStepDTO> listStep = new ArrayList<>();
 
+        LocalDate eventDate = dto.getStartDate().plusMonths(2);
+        CycleStep cycleStep = null;
         for (TreatmentStep step : treatmentSteps) {
-            // Tạo CycleStep từ TreatmentStep
-            CycleStep cycleStep = new CycleStep();
+            cycleStep = new CycleStep();
             cycleStep.setCycle(savedCycle);
             cycleStep.setTreatmentStep(step);
             cycleStep.setStepOrder(step.getStepOrder());
             cycleStep.setStatusCycleStep(StatusCycle.ongoing);
             cycleStep.setDescription(null);
             cycleStep.setEventdate(eventDate);
+            cycleStepRepository.save(cycleStep);
 
-            CycleStep savedCycleStep = cycleStepRepository.save(cycleStep);
-
-            // Lấy danh sách thuốc theo treatmentStepId
-            List<Medicine> medicines = medicineRepository.findByTreatmentStep_Id(step.getId());
-
-            for (Medicine medicine : medicines) {
-                MedicineSchedule cycleMedicine = new MedicineSchedule();
-                cycleMedicine.setCycleStep(savedCycleStep);
-                cycleMedicine.setMedicine(medicine);
-                cycleMedicine.setStartdate(eventDate);
-                cycleMedicine.setEnddate(eventDate.plusDays(5));
-                cycleMedicine.setNote(null);
-                cycleMedicine.setStatus(StatusMedicineSchedule.ongoing);
-                medicineScheduleRepository.save(cycleMedicine);
-            }
-
-            // Cập nhật ngày cho step tiếp theo
             eventDate = eventDate.plusMonths(2);
+
+            CycleStepDTO cycleStepDTO =
+                    new CycleStepDTO(
+                            cycleStep.getStepOrder(),
+                            cycle.getService().getName(),
+                            cycleStep.getDescription(),
+                            cycleStep.getEventdate(),
+                            cycleStep.getStatusCycleStep(),
+                            cycleStep.getNote());
+            listStep.add(cycleStepDTO);
         }
-        return savedCycle;
+        return new CycleDTO(
+                customer.getCustomerId(),
+                service.getServiceId(),
+                savedCycle.getStartdate(),
+                savedCycle.getNote(),
+                listStep
+        );
     }
 }

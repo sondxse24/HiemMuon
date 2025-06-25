@@ -2,10 +2,7 @@ package hsf302.com.hiemmuon.controller;
 
 import hsf302.com.hiemmuon.dto.ApiResponse;
 import hsf302.com.hiemmuon.dto.createDto.CreateCycleDTO;
-import hsf302.com.hiemmuon.dto.responseDto.CycleNoteDTO;
-import hsf302.com.hiemmuon.dto.responseDto.CycleOfCustomerDTO;
-import hsf302.com.hiemmuon.dto.responseDto.CycleOfDoctorDTO;
-import hsf302.com.hiemmuon.dto.responseDto.CycleStepDTO;
+import hsf302.com.hiemmuon.dto.responseDto.*;
 import hsf302.com.hiemmuon.entity.Cycle;
 import hsf302.com.hiemmuon.service.CycleService;
 import hsf302.com.hiemmuon.service.CycleStepService;
@@ -73,10 +70,10 @@ public class CycleController {
             @RequestBody CreateCycleDTO dto,
             HttpServletRequest request) {
 
-        Cycle cycle = cycleService.createCycle(dto, request);
+        CycleDTO cycle = cycleService.createCycle(dto, request);
 
-        ApiResponse<Cycle> response = new ApiResponse<>(
-                201,
+        ApiResponse<CycleDTO> response = new ApiResponse<>(
+                200,
                 "Cycle created successfully",
                 cycle);
         return ResponseEntity.ok(response);
