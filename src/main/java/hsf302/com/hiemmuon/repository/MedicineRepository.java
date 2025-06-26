@@ -8,5 +8,4 @@ import java.util.List;
 
 @Repository
 public interface MedicineRepository extends JpaRepository<Medicine, Integer> {
-    List<Medicine> findByTreatmentStep_Id(int treatmentStepId);
 }

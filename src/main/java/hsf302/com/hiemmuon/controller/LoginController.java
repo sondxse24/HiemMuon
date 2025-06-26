@@ -2,8 +2,10 @@ package hsf302.com.hiemmuon.controller;
 
 import hsf302.com.hiemmuon.dto.ApiResponse;
 import hsf302.com.hiemmuon.dto.LoginRequest;
+import hsf302.com.hiemmuon.entity.Medicine;
 import hsf302.com.hiemmuon.entity.Role;
 import hsf302.com.hiemmuon.entity.User;
+import hsf302.com.hiemmuon.repository.MedicineRepository;
 import hsf302.com.hiemmuon.service.JwtService;
 import hsf302.com.hiemmuon.service.UserService;
 import hsf302.com.hiemmuon.utils.JwtUtil;
@@ -16,6 +18,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Time;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +37,9 @@ public class LoginController {
 
     @Autowired
     private JwtService jwtService;
+//
+//    @Autowired
+//    private MedicineRepository medicineRepository;
 
     @PostMapping()
     public ResponseEntity<ApiResponse<String>> loginAdmin(@RequestBody @Valid LoginRequest request) {
@@ -57,6 +63,15 @@ public class LoginController {
                 "Đăng nhập tài khoản thành công",
                 token
         );
+//        Medicine med = new Medicine();
+//        med.setName("Paracetamol");
+//        med.setUseAt(List.of(
+//                Time.valueOf("08:00:00"),
+//                Time.valueOf("12:00:00"),
+//                Time.valueOf("20:00:00")
+//        ));
+//
+//        medicineRepository.save(med);
 
         return ResponseEntity.ok(response);
     }

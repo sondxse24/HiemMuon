@@ -3,7 +3,6 @@ package hsf302.com.hiemmuon.controller;
 import hsf302.com.hiemmuon.dto.ApiResponse;
 import hsf302.com.hiemmuon.dto.createDto.CreateCycleDTO;
 import hsf302.com.hiemmuon.dto.responseDto.*;
-import hsf302.com.hiemmuon.entity.Cycle;
 import hsf302.com.hiemmuon.service.CycleService;
 import hsf302.com.hiemmuon.service.CycleStepService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,9 +26,9 @@ public class CycleController {
     //customer get list cycle của mình
     @GetMapping("/meC/cycle/all")
     public ResponseEntity<ApiResponse<?>> getMyAllCycle(HttpServletRequest request) {
-        List<CycleOfCustomerDTO> cycles = cycleService.getAllCycleOfCustomer(request);
+        List<CycleDTO> cycles = cycleService.getAllCycleOfCustomer(request);
 
-        ApiResponse<List<CycleOfCustomerDTO>> response = new ApiResponse<>(
+        ApiResponse<List<CycleDTO>> response = new ApiResponse<>(
                 200,
                 "Get all cycles of customer successfully",
                 cycles);
@@ -40,9 +39,9 @@ public class CycleController {
     @GetMapping("/meD/cycle/all")
     public ResponseEntity<ApiResponse<?>> getCustomerCycleStep(
             HttpServletRequest request) {
-        List<CycleOfDoctorDTO> steps = cycleService.getCycleOfDoctor(request);
+        List<CycleDTO> steps = cycleService.getAllCycleOfDoctor(request);
 
-        ApiResponse<List<CycleOfDoctorDTO>> response = new ApiResponse<>(
+        ApiResponse<List<CycleDTO>> response = new ApiResponse<>(
                 200,
                 "Get all cycle of doctor successfully",
                 steps);

@@ -19,7 +19,7 @@ public class JwtUtil {
         this.SECRET = SECRET;
     }
 
-    private final long EXPIRATION_TIME = 2 * 60 * 60 * 1000;
+    private final long EXPIRATION_TIME = 24 * 60 * 60 * 1000;
 
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
