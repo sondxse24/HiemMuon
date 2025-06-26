@@ -50,15 +50,13 @@ public class SecurityConfig {
                                 "/api/doctors/id/**",
                                 "/api/doctors/name/**",
                                 "/api/doctors/active",
-                                "/api/doctors/specification",
-
-                                "/api/customer/info")
-                        .permitAll()
+                                "/api/doctors/specification").permitAll()
 
                         .requestMatchers(HttpMethod.GET,
                                 "api/appointment-services/doctors/{doctorId}/available-schedules",
                                 "api/appointment-services/appointments/reexam",
-                                "/api/cycles/meC").hasRole("CUSTOMER")
+                                "/api/cycles/meC",
+                                "api/test-results/customer").hasRole("CUSTOMER")
 
                         .requestMatchers(HttpMethod.GET,
                                 "/api/doctors/me",
@@ -74,7 +72,14 @@ public class SecurityConfig {
                                 "/api/admin/customers").hasRole("ADMIN")
 
                         .requestMatchers(HttpMethod.GET,
-                                "/api/cycle-steps/cycleId/**").hasAnyRole("CUSTOMER", "DOCTOR")
+                                "/api/cycle-steps/cycleId/**",
+                                "/api/customer/info",
+                                "api/appointment-services/appointments/detail",
+                                "api/test-results/step/{stepId}",
+                                "api/appointment-services/appointments/{appointmentId}/detail").hasAnyRole("CUSTOMER", "DOCTOR")
+
+                        .requestMatchers(HttpMethod.GET,
+                                "api/login/roles").hasAnyRole("CUSTOMER", "DOCTOR", "ADMIN", "MANAGER")
 
                         .requestMatchers(HttpMethod.GET,
                                 "/api/treatment-services/**").permitAll()
@@ -85,7 +90,8 @@ public class SecurityConfig {
 
                         .requestMatchers(HttpMethod.POST,
                                 "/api/appointment-services/appointments/reexam",
-                                "/api/cycles/create").hasRole("DOCTOR")
+                                "/api/cycles/create",
+                                "api/test-results/create").hasRole("DOCTOR")
 
                         .requestMatchers(HttpMethod.POST,
                                 "/api/doctors",
@@ -99,7 +105,8 @@ public class SecurityConfig {
                                 "/api/customer/update").hasRole("CUSTOMER")
 
                         .requestMatchers(HttpMethod.PUT,
-                                "/api/doctors/me").hasRole("DOCTOR")
+                                "/api/doctors/me",
+                                "api/test-results/update/{id}").hasRole("DOCTOR")
 
                         .requestMatchers(HttpMethod.PUT,
                                 "/api/treatment-services/**").hasRole("MANAGER")
@@ -112,11 +119,13 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PATCH,
                                 "/api/cycles/cycleId/*/note",
                                 "/api/cycle-steps/cycleId/*/stepOrder/*/status",
-                                "/api/cycle-steps/cycleId/*/stepOrder/*/note").hasRole("DOCTOR")
+                                "/api/cycle-steps/cycleId/*/stepOrder/*/note",
+                                "api/appointment-services/appointments/{appointmentId}/update-service").hasRole("DOCTOR")
 
                         .requestMatchers(HttpMethod.PATCH,
                                 "/api/doctors/status/**",
                                 "/api/treatment-services/status/**").hasRole("MANAGER")
+
 
                         .requestMatchers(
                                 "/swagger-ui/**",

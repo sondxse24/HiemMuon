@@ -1,14 +1,14 @@
 package hsf302.com.hiemmuon.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 
 @Entity
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "test_results")
 public class TestResult {
 
@@ -16,10 +16,6 @@ public class TestResult {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "result_id")
     private int resultId;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "step_id", nullable = false)
-    private CycleStep cycleStep;
 
     @Column(name = "name", length = 100, nullable = false)
     private String name;
@@ -39,16 +35,7 @@ public class TestResult {
     @Column(name = "note", columnDefinition = "NVARCHAR(MAX)")
     private String note;
 
-    public TestResult() {
-    }
-
-    public TestResult(CycleStep cycleStep, String name, Float value, String unit, String referenceRange, LocalDate testDate, String note) {
-        this.cycleStep = cycleStep;
-        this.name = name;
-        this.value = value;
-        this.unit = unit;
-        this.referenceRange = referenceRange;
-        this.testDate = testDate;
-        this.note = note;
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "appointment_id")
+    private Appointment appointment;
 }
