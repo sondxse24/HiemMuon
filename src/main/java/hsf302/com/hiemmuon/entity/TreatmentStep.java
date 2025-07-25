@@ -14,7 +14,7 @@ public class TreatmentStep {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "treatment_step_id")
-    private int id;
+    private int stepId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "service_id", nullable = false)
@@ -30,4 +30,7 @@ public class TreatmentStep {
     @Nationalized
     @Column(name = "description", columnDefinition = "NVARCHAR(MAX)", nullable = false)
     private String description;
+
+    @Column(name = "expected_duration", columnDefinition = "NVARCHAR(255)")
+    private String expectedDuration;
 }

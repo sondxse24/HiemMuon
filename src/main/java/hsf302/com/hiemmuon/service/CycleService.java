@@ -13,9 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class CycleService {
@@ -74,54 +74,77 @@ public class CycleService {
 
         TreatmentService service = treatmentServiceRepository.findById(dto.getServiceId());
 
+        // Tính ngày kết thúc theo logic hệ thống
+        LocalDate endDate = dto.getStartDate().plusMonths(10);
+
+        List<Cycle> overlappingCycles = cycleRepository.findOverlappingCycles(
+                dto.getCustomerId(),
+                dto.getStartDate(),
+                endDate,
+                StatusCycle.ongoing);
+
+
+        if (!overlappingCycles.isEmpty()) {
+            throw new RuntimeException("Khách hàng này đã có một chu kỳ điều trị trong thời gian này.");
+        }
+
         // Tạo Cycle
         Cycle cycle = new Cycle();
         cycle.setCustomer(customer);
         cycle.setDoctor(doctor);
         cycle.setService(service);
-        cycle.setStartdate(dto.getStartDate());
+        cycle.setStartDate(dto.getStartDate());
         cycle.setEndDate(dto.getStartDate().plusMonths(10));
         cycle.setNote(dto.getNote());
         cycle.setStatus(StatusCycle.ongoing);
 
         Cycle savedCycle = cycleRepository.save(cycle);
 
-        // Lấy các bước điều trị theo service
         List<TreatmentStep> treatmentSteps = treatmentStepRepository
                 .findByService_ServiceIdOrderByStepOrderAsc(service.getServiceId());
 
         List<CycleStepDTO> listStep = new ArrayList<>();
 
-        LocalDate eventDate = dto.getStartDate().plusMonths(2);
-        CycleStep cycleStep = null;
-        for (TreatmentStep step : treatmentSteps) {
-            cycleStep = new CycleStep();
+        for (int i = 0; i < treatmentSteps.size(); i++) {
+            TreatmentStep step = treatmentSteps.get(i);
+
+            CycleStep cycleStep = new CycleStep();
             cycleStep.setCycle(savedCycle);
             cycleStep.setTreatmentStep(step);
             cycleStep.setStepOrder(step.getStepOrder());
             cycleStep.setStatusCycleStep(StatusCycle.ongoing);
-            cycleStep.setDescription(null);
-            cycleStep.setEventdate(eventDate);
+            cycleStep.setDescription(step.getDescription());
+
+            if (i == 0) {
+                cycleStep.setStartDate(dto.getStartDate());
+                cycleStep.setEventdate(dto.getStartDate().plusDays(1).atTime(10, 0));
+            }
+
             cycleStepRepository.save(cycleStep);
 
-            eventDate = eventDate.plusMonths(2);
-
             CycleStepDTO cycleStepDTO = CycleStepDTO.builder()
+                    .stepId(cycleStep.getStepId())
                     .stepOrder(cycleStep.getStepOrder())
-                    .serive(cycle.getService().getName())
+                    .service(cycle.getService().getName())
                     .description(cycleStep.getDescription())
-                    .eventdate(cycleStep.getEventdate())
+                    .startDate(cycleStep.getStartDate())
+                    .eventDate(cycleStep.getEventdate())
                     .statusCycleStep(cycleStep.getStatusCycleStep())
                     .note(cycleStep.getNote())
                     .build();
             listStep.add(cycleStepDTO);
         }
+
         return new CycleDTO(
                 savedCycle.getCycleId(),
                 savedCycle.getCustomer().getCustomerId(),
+                savedCycle.getCustomer().getUser().getName(),
+                Period.between(savedCycle.getCustomer().getUser().getDob(), LocalDate.now()).getYears(),
                 savedCycle.getDoctor().getDoctorId(),
+                savedCycle.getDoctor().getUser().getName(),
                 savedCycle.getService().getServiceId(),
-                savedCycle.getStartdate(),
+                savedCycle.getService().getName(),
+                savedCycle.getStartDate(),
                 savedCycle.getEndDate(),
                 savedCycle.getStatus(),
                 savedCycle.getNote(),
@@ -130,30 +153,54 @@ public class CycleService {
     }
 
     private CycleDTO convertToCycleDTO(Cycle cycle) {
-        List<CycleStep> steps = cycleStepRepository.findByCycle_CycleId(cycle.getCycleId());
+        List<CycleStepDTO> stepDTOs = new ArrayList<>();
 
-        List<CycleStepDTO> stepDTOs = steps.stream()
-                .map(step -> CycleStepDTO.builder()
-                        .stepOrder(step.getStepOrder())
-                        .serive(step.getCycle().getService().getName())
-                        .description(step.getDescription())
-                        .eventdate(step.getEventdate())
-                        .statusCycleStep(step.getStatusCycleStep())
-                        .note(step.getNote())
-                        .build()
-                )
-                .collect(Collectors.toList());
+        CycleStep ongoingStep = cycleStepRepository
+                .findFirstByCycle_CycleIdAndStatusCycleStepOrderByStepOrderAsc(
+                        cycle.getCycleId(), StatusCycle.ongoing);
+
+        if (ongoingStep != null) {
+            stepDTOs.add(convertToCycleStepDTO(ongoingStep));
+        } else {
+            List<CycleStep> finishedSteps = cycleStepRepository
+                    .findByCycle_CycleIdAndStatusCycleStepOrderByStepOrderAsc(
+                            cycle.getCycleId(), StatusCycle.finished);
+
+            if (!finishedSteps.isEmpty()) {
+                CycleStep lastFinishedStep = finishedSteps.get(finishedSteps.size() - 1);
+                stepDTOs.add(convertToCycleStepDTO(lastFinishedStep));
+            }
+        }
 
         return CycleDTO.builder()
                 .cycleId(cycle.getCycleId())
                 .customerId(cycle.getCustomer().getCustomerId())
+                .customerName(cycle.getCustomer().getUser().getName())
+                .customerAge(Period.between(
+                        cycle.getCustomer().getUser().getDob(),
+                        LocalDate.now()).getYears())
                 .doctorId(cycle.getDoctor().getDoctorId())
+                .doctorName(cycle.getDoctor().getUser().getName())
                 .serviceId(cycle.getService().getServiceId())
-                .startDate(cycle.getStartdate())
+                .serviceName(cycle.getService().getName())
+                .startDate(cycle.getStartDate())
                 .endDate(cycle.getEndDate())
                 .status(cycle.getStatus())
                 .note(cycle.getNote())
                 .cycleStep(stepDTOs)
+                .build();
+    }
+
+    private CycleStepDTO convertToCycleStepDTO(CycleStep step) {
+        return CycleStepDTO.builder()
+                .stepId(step.getStepId())
+                .stepOrder(step.getStepOrder())
+                .service(step.getCycle().getService().getName())
+                .description(step.getDescription())
+                .eventDate(step.getEventdate())
+                .statusCycleStep(step.getStatusCycleStep())
+                .note(step.getNote())
+                .startDate(step.getStartDate())
                 .build();
     }
 }

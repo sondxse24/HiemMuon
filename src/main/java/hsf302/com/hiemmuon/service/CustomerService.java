@@ -10,10 +10,16 @@ import hsf302.com.hiemmuon.enums.Genders;
 import hsf302.com.hiemmuon.repository.CustomerRepository;
 import hsf302.com.hiemmuon.repository.RoleRepository;
 import hsf302.com.hiemmuon.repository.UserRepository;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.context.Context;
+import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -33,6 +39,9 @@ public class CustomerService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private SendMailService sendMailService;
 
     public List<CustomerDTO> getAllCustomers() {
         List<Customer> customers = customerRepository.findAllWithUser();
@@ -56,7 +65,7 @@ public class CustomerService {
         User user = userRepository.findByEmail(email);
 
         Customer customer = customerRepository.findByUser(user);
-        if(customer == null) throw new RuntimeException("Không tìm tháy customer");
+        if (customer == null) throw new RuntimeException("Không tìm tháy customer");
 
         CustomerDTO dto = new CustomerDTO();
         dto.setId(customer.getCustomerId());
@@ -73,12 +82,12 @@ public class CustomerService {
     public void updateMyInfo(String email, UpdateCustomerDTO dto) {
         User user = userRepository.findByEmail(email);
 
-        if(user == null){
+        if (user == null) {
             throw new RuntimeException("không tìm tha người dùng");
         }
 
         Customer customer = customerRepository.findByUser(user);
-        if(customer == null){
+        if (customer == null) {
             throw new RuntimeException("không tìm thấy khách hàng");
         }
 
@@ -92,36 +101,36 @@ public class CustomerService {
         customerRepository.save(customer);
     }
 
-    @Transactional
-    public void registerCustomer(RegisterCustomerDTO dto) {
-        if (userRepository.existsByEmail(dto.getEmail())) {
-            throw new RuntimeException("Email đã tồn tại");
+        @Transactional
+        public void registerCustomer(RegisterCustomerDTO dto) {
+            if (userRepository.existsByEmail(dto.getEmail())) {
+                throw new RuntimeException("Email đã tồn tại");
+            }
+
+            Role customerRole = roleRepository.findByRoleName("CUSTOMER");
+            if (customerRole == null) {
+                throw new RuntimeException("Không tìm thấy role CUSTOMER");
+            }
+
+            User user = new User();
+            user.setName(dto.getName());
+            user.setEmail(dto.getEmail());
+            user.setPassword(passwordEncoder.encode(dto.getPassword()));
+            user.setPhone(dto.getPhone());
+            user.setDob(dto.getDob());
+            user.setGender(dto.getGender());
+            user.setRole(customerRole);
+            user.setCreateAt(LocalDate.now());
+            userRepository.save(user);
+
+            Customer customer = new Customer();
+            customer.setUser(user);
+            customer.setActive(true);
+            customer.setMedicalHistory(dto.getMedicalHistory());
+            customerRepository.save(customer);
         }
 
-        Role customerRole = roleRepository.findByRoleName("CUSTOMER");
-        if (customerRole == null) {
-            throw new RuntimeException("Không tìm thấy role CUSTOMER");
-        }
-
-        User user = new User();
-        user.setName(dto.getName());
-        user.setEmail(dto.getEmail());
-        user.setPassword(passwordEncoder.encode(dto.getPassword()));
-        user.setPhone(dto.getPhone());
-        user.setDob(dto.getDob());
-        user.setGender(dto.getGender());
-        user.setRole(customerRole);
-        user.setCreateAt(LocalDate.now());
-        userRepository.save(user);
-
-        Customer customer = new Customer();
-        customer.setUser(user);
-        customer.setActive(true);
-        customer.setMedicalHistory(dto.getMedicalHistory());
-        customerRepository.save(customer);
-    }
-
-    public Customer getCustomerById(int id){
+    public Customer getCustomerById(int id) {
         Customer customer = customerRepository.findById(id).get();
         return customer;
     }

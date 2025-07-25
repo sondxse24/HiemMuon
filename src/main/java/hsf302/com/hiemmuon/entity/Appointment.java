@@ -46,6 +46,9 @@ public class Appointment {
     private TreatmentService service;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "step_id")
+    @JoinColumn(name = "step_id", nullable = true)
     private CycleStep cycleStep;
+
+    @Column(name = "is_reminded", nullable = false)
+    private Boolean isReminded = false;
 }

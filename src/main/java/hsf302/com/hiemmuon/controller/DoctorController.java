@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "3. Doctor Controller")
+@Tag(name = "12. Doctor Controller")
 @RestController
 @RequestMapping("/api/doctors")
 public class DoctorController {
@@ -109,9 +109,9 @@ public class DoctorController {
     public ResponseEntity<ApiResponse<?>> updateDoctor(
             HttpServletRequest request,
             @RequestBody UpdateDoctorDTO updateDoctorDTO) {
-        Doctor savedDoctor = doctorService.updateDoctorMe(request, updateDoctorDTO);
+        DoctorDTO savedDoctor = doctorService.updateDoctorMe(request, updateDoctorDTO);
 
-        ApiResponse<Doctor> response = new ApiResponse<>(
+        ApiResponse<DoctorDTO> response = new ApiResponse<>(
                 200,
                 "Doctor updated successfully",
                 savedDoctor

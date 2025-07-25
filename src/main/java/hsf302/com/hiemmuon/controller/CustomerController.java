@@ -5,6 +5,8 @@ import hsf302.com.hiemmuon.dto.createDto.RegisterCustomerDTO;
 import hsf302.com.hiemmuon.dto.responseDto.CustomerDTO;
 import hsf302.com.hiemmuon.dto.updateDto.UpdateCustomerDTO;
 import hsf302.com.hiemmuon.service.CustomerService;
+import hsf302.com.hiemmuon.service.SendMailService;
+import hsf302.com.hiemmuon.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -16,13 +18,19 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "2. Customer Controller")
+@Tag(name = "11. Customer Controller")
 @RestController
 @RequestMapping("/api")
 public class CustomerController {
 
     @Autowired
     private CustomerService customerService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private SendMailService sendMailService;
 
     @Operation(
             summary = "Lấy danh sách khách hàng",
@@ -42,11 +50,31 @@ public class CustomerController {
     }
 
     @Operation(
-            summary = "Đăng ký tài khoản khách hàng",
-            description = "API cho phép người dùng mới đăng ký tài khoản với vai trò khách hàng."
+            summary = "Đăng ký tài khoản khách hàng và gửi mã OTP",
+            description = "API cho phép người dùng mới đăng ký tài khoản với vai trò khách hàng và nhận mã OTP."
     )
-    @PostMapping("/register/customer")
-    public ResponseEntity<ApiResponse<String>> registerCustomer(@Valid @RequestBody RegisterCustomerDTO dto) {
+    @PostMapping("/register/request")
+    public ResponseEntity<ApiResponse<String>> sendOtp(@RequestBody RegisterCustomerDTO dto) {
+        if (userService.isEmailExists(dto.getEmail())) {
+            throw new RuntimeException("Email đã tồn tại");
+        }
+        sendMailService.storePendingRegistration(dto);
+        sendMailService.sendOtp(dto.getEmail(), dto.getName());
+        return ResponseEntity.ok(new ApiResponse<>(200, "OTP đã được gửi đến email của bạn", null));
+    }
+
+
+    @Operation(
+            summary = "Xác nhận mã OTP",
+            description = "API cho phép người dùng xác nhận mã OTP để kích hoạt tài khoản."
+    )
+    @PostMapping("/register/confirm")
+    public ResponseEntity<ApiResponse<String>> confirmRegister(@RequestParam String email, @RequestParam String otp) {
+        if (!sendMailService.validOtp(email, otp)) {
+            throw new RuntimeException("Mã OTP không đúng hoặc đã hết hạn");
+        }
+
+        RegisterCustomerDTO dto = sendMailService.getPendingRegistration(email);
         customerService.registerCustomer(dto);
         ApiResponse<String> response = new ApiResponse<>(
                 200, "Đăng ký khách hàng thành công", null);

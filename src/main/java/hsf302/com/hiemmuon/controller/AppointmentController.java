@@ -6,23 +6,23 @@ import hsf302.com.hiemmuon.dto.responseDto.*;
 import hsf302.com.hiemmuon.entity.Customer;
 import hsf302.com.hiemmuon.entity.Doctor;
 import hsf302.com.hiemmuon.entity.User;
-import hsf302.com.hiemmuon.service.AppointmentService;
-import hsf302.com.hiemmuon.service.CustomerService;
-import hsf302.com.hiemmuon.service.DoctorService;
-import hsf302.com.hiemmuon.service.UserService;
+import hsf302.com.hiemmuon.service.*;
+import io.jsonwebtoken.Claims;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
 
-@Tag(name = "5. Appointment Controller")
+@Tag(name = "2. Appointment Controller")
 @RestController
 @RequestMapping("/api/appointment-services")
 public class AppointmentController {
@@ -35,17 +35,50 @@ public class AppointmentController {
 
     @Autowired
     DoctorService doctorService;
+
     @Autowired
     private CustomerService customerService;
 
+    @Autowired
+    private JwtService jwtService;
+
     @Operation(
-            summary = "Xem lịch trống của bác sĩ",
-            description = "Lấy danh sách các khung giờ bác sĩ còn trống trong ngày đã chọn. Dùng để đặt lịch mới."
+            summary = "Xem lịch ban của bác sĩ",
+            description = "Lấy danh sách các khung giờ bác sĩ còn ban trong ngày đã chọn. Dùng để đặt lịch mới."
     )
     @GetMapping("/doctors/{doctorId}/unavailable-schedules")
     public ResponseEntity<?> getDoctorSchedules(
             @PathVariable int doctorId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+
+        List<AvailableScheduleDTO> unSchedules = appointmentService.getAvailableSchedules(doctorId, date);
+
+        // Lọc các lịch có status == 1
+        List<AvailableScheduleDTO> available = unSchedules.stream()
+                .filter(s -> !s.isStatus())
+                .toList();
+
+        if (available.isEmpty()) {
+            return ResponseEntity.ok("Bác sĩ ranh ca ngay ngày hôm nay");
+        }
+
+        return ResponseEntity.ok(available);
+    }
+
+    @Operation(
+            summary = "Xem lịch bận của chính bác sĩ",
+            description = "Lấy danh sách các khung giờ bác sĩ còn bận trong ngày đã chọn. Dùng để đặt lịch mới."
+    )
+    @GetMapping("/doctors/unavailable-schedules")
+    public ResponseEntity<?> getMySchedules(
+            HttpServletRequest request,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        final String authHeader = request.getHeader("Authorization");
+        final String token = authHeader.substring(7);
+        Claims claims = jwtService.extractAllClaims(token);
+
+        Object doctorIdObj = claims.get("userId");
+        Integer doctorId = Integer.parseInt(doctorIdObj.toString());
 
         List<AvailableScheduleDTO> unSchedules = appointmentService.getAvailableSchedules(doctorId, date);
 
@@ -87,18 +120,19 @@ public class AppointmentController {
         return ResponseEntity.ok("Đặt lịch tái khám thành công.");
     }
 
-    @Operation(
-            summary = "Lịch tái khám của khách hàng",
-            description = "Trả về tất cả các lịch tái khám đã được bác sĩ đặt cho khách hàng hiện tại."
-    )
-    @GetMapping("/appointments/reexam")
-    public ResponseEntity<List<ReExamAppointmentResponseDTO>> getOwnReExamAppointments() {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userService.getUserByEmail(email);
-        Customer customer = customerService.getCustomerById(user.getUserId());
-        List<ReExamAppointmentResponseDTO> result = appointmentService.getReExamAppointmentsForCustomer(customer.getCustomerId());
-        return ResponseEntity.ok(result);
-    }
+//    @Operation(
+//            summary = "Lịch tái khám của khách hàng",
+//            description = "Trả về tất cả các lịch tái khám đã được bác sĩ đặt cho khách hàng hiện tại."
+//    )
+//    @GetMapping("/appointments/reexam")
+//    public ResponseEntity<List<ReExamAppointmentResponseDTO>> getOwnReExamAppointments() {
+//        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+//        User user = userService.getUserByEmail(email);
+//        Customer customer = customerService.getCustomerById(user.getUserId());
+//        Doctor doctor = doctorService.getDoctorById(user.getUserId());
+//        List<ReExamAppointmentResponseDTO> result = appointmentService.getReExamAppointmentsForaDoctor(doctor.getDoctorId());
+//        return ResponseEntity.ok(result);
+//    }
 
     @Operation(
             summary = "Hủy cuộc hẹn",
@@ -195,5 +229,10 @@ public class AppointmentController {
     public ResponseEntity<AppointmentDetailDTO> getAppointmentDetailById(@PathVariable int appointmentId) {
         AppointmentDetailDTO dto = appointmentService.getAppointmentDetailById(appointmentId);
         return ResponseEntity.ok(dto);
+    }
+
+    @Scheduled(fixedRate = 60 * 1000) // Mỗi phút
+    public void runAppointmentReminder() {
+        appointmentService.sendAppointmentReminders();
     }
 }
